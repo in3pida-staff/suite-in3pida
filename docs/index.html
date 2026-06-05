@@ -19,17 +19,18 @@
       }
       *{box-sizing:border-box;margin:0;padding:0}
       body{font-family:var(--font);color:var(--ink);min-height:100vh;
-        background-color:#f7dfe9;
-        background-image:linear-gradient(125deg,
-          rgba(216,45,107,.18) 0%,
-          rgba(216,45,107,.07) 30%,
-          rgba(216,45,107,.03) 48%,
-          rgba(216,45,107,.08) 66%,
-          rgba(216,45,107,.20) 100%);
+        background-color:#fff;
+        background-image:linear-gradient(135deg,
+          rgba(216,45,107,.32) 0%,
+          rgba(216,45,107,.32) 37%,
+          rgba(216,45,107,.13) 37%,
+          rgba(216,45,107,.13) 61%,
+          rgba(216,45,107,.34) 61%,
+          rgba(216,45,107,.34) 100%);
         background-attachment:fixed}
 
       /* NAVBAR */
-      .navbar{height:64px;background:rgba(247,223,233,.72);backdrop-filter:blur(8px);border-bottom:1px solid rgba(216,45,107,.10);position:sticky;top:0;z-index:50}
+      .navbar{height:64px;background:transparent;position:sticky;top:0;z-index:50}
       .nav-inner{max-width:1120px;margin:0 auto;height:100%;padding:0 26px;display:flex;align-items:center;justify-content:space-between}
       .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
       .nav-logo img{height:28px;object-fit:contain}
@@ -60,15 +61,15 @@
       .lead{font-size:14px;color:var(--grey);margin-top:10px;font-weight:500}
 
       /* GRID */
-      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:18px;padding-bottom:64px}
-      .card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:22px;text-align:left;transition:transform .16s,box-shadow .16s,border-color .16s;position:relative;display:flex;flex-direction:column;min-height:150px;box-shadow:0 2px 16px rgba(24,24,52,.05)}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(164px,1fr));gap:14px;padding-bottom:64px}
+      .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;text-align:left;transition:transform .16s,box-shadow .16s,border-color .16s;position:relative;display:flex;flex-direction:column;min-height:112px;box-shadow:0 2px 14px rgba(24,24,52,.06)}
       .card.clickable{cursor:pointer}
-      .card.clickable:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(24,24,52,.14);border-color:transparent}
-      .ico{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:16px}
-      .ico svg{width:27px;height:27px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-      .card-label{font-size:16px;font-weight:800;margin-bottom:5px;letter-spacing:-.01em}
-      .card-desc{font-size:12.5px;color:var(--grey);line-height:1.45;font-weight:500}
-      .card-badge{position:absolute;top:17px;right:17px;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999em}
+      .card.clickable:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(24,24,52,.16);border-color:transparent}
+      .ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:11px}
+      .ico svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .card-label{font-size:14px;font-weight:800;margin-bottom:3px;letter-spacing:-.01em}
+      .card-desc{font-size:11.5px;color:var(--grey);line-height:1.4;font-weight:500}
+      .card-badge{position:absolute;top:13px;right:13px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999em}
       .badge-soon{background:#f0f1f5;color:#9a9ab0}
       .badge-admin{background:rgba(0,155,185,.13);color:var(--cyan2)}
       .card.soon{opacity:.7}
@@ -173,7 +174,6 @@
       <div class="h1">le tue <em>app</em></div>
       <div class="lead">Scegli un'app per accedere. L'accesso è automatico: non devi rifare il login.</div>
     </div>
-    <div class="strip"></div>
     <div class="grid" id="app-grid"></div>
   </div>
 
