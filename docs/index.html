@@ -52,17 +52,18 @@
       .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
       .head{padding:40px 0 26px}
       .hi{font-size:13px;font-weight:800;color:rgba(255,255,255,.92);margin-bottom:8px;text-transform:uppercase;letter-spacing:.12em}
-      .h1{font-family:var(--display);font-size:74px;line-height:.96;text-transform:uppercase;letter-spacing:.012em;color:transparent;-webkit-text-stroke:1.8px #fff}
-      .h1 em{color:transparent;font-style:normal}
+      .h1{font-family:var(--display);font-size:74px;line-height:.96;text-transform:uppercase;letter-spacing:.012em;color:#fff}
+      .h1 .dot{display:inline-block;width:.15em;height:.15em;border-radius:50%;background:var(--cyan);vertical-align:baseline;margin-left:.05em}
       .lead{font-size:14px;color:rgba(255,255,255,.92);margin-top:12px;font-weight:500}
 
       /* GRID */
       .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:44px;padding-bottom:80px}
-      .card{background:rgba(255,255,255,.2);border:1.8px solid #fff;border-radius:18px;padding:16px;text-align:left;transition:transform .16s,background .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden;box-shadow:7px 7px 0 0 #d82d6b,7px 7px 0 1.6px #fff,14px 14px 0 0 #d82d6b,14px 14px 0 1.6px #fff}
+      .card{background:#e0588a;border:2px solid #fff;border-radius:28px;padding:20px;text-align:left;transition:transform .16s,background .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden}
+      .card::before{content:"";position:absolute;top:9px;left:9px;width:68%;height:68%;border:2px solid #fff;border-right:0;border-bottom:0;border-top-left-radius:20px;pointer-events:none}
       .card.clickable{cursor:pointer}
-      .card.clickable:hover{transform:translateY(-4px);background:rgba(255,255,255,.28)}
+      .card.clickable:hover{transform:translateY(-4px);background:#e96e9b}
       .ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-      .ico svg{width:22px;height:22px;stroke:var(--magenta);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .ico svg{width:22px;height:22px;stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
       .card-label{font-family:var(--display);font-size:22px;font-weight:400;margin-bottom:5px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.05}
       .card-desc{font-size:11.5px;color:rgba(255,255,255,.85);line-height:1.4;font-weight:500}
       .card-badge{position:absolute;top:13px;right:13px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999em}
@@ -167,7 +168,7 @@
   <div class="wrap" id="view-home">
     <div class="head">
       <div class="hi" id="greet">ciao!</div>
-      <div class="h1">le tue <em>app</em></div>
+      <div class="h1">le tue app<span class="dot"></span></div>
       <div class="lead">Scegli un'app per accedere. L'accesso è automatico: non devi rifare il login.</div>
     </div>
     <div class="grid" id="app-grid"></div>
