@@ -50,7 +50,7 @@
 
       /* HEADER pagina */
       .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
-      .head{padding:40px 0 26px}
+      .head{padding:40px 0 42px}
       .hi{font-size:13px;font-weight:800;color:rgba(255,255,255,.92);margin-bottom:8px;text-transform:uppercase;letter-spacing:.12em}
       .h1{font-family:var(--display);font-size:92px;line-height:.94;text-transform:uppercase;letter-spacing:.012em;color:#fff}
       .h1 .dot{display:inline-block;width:.15em;height:.15em;border-radius:50%;background:var(--cyan);vertical-align:baseline;margin-left:.05em}
@@ -58,18 +58,18 @@
 
       /* GRID */
       .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:30px;max-width:1075px;padding-bottom:80px}
-      .card{background:linear-gradient(135deg,#f6b1cb 0%,#e16c97 40%,#cd2a62 100%);border:2px solid #fff;border-radius:28px;padding:20px;text-align:left;transition:transform .16s,filter .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden}
+      .card{background:#fff;border:2px solid #fff;border-radius:28px;padding:20px;text-align:left;transition:transform .16s,filter .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden}
       .card.clickable{cursor:pointer}
       .card.clickable:hover{transform:translateY(-4px);filter:brightness(1.08)}
-      .ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-      .ico svg{width:22px;height:22px;stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-      .card-label{font-family:var(--display);font-size:22px;font-weight:400;margin-bottom:5px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.05}
-      .card-desc{font-size:11.5px;color:rgba(255,255,255,.85);line-height:1.4;font-weight:500}
+      .ico{width:42px;height:42px;border-radius:12px;background:var(--magenta);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+      .ico svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .card-label{font-family:var(--display);font-size:22px;font-weight:400;margin-bottom:5px;letter-spacing:.02em;text-transform:uppercase;color:var(--magenta);line-height:1.05}
+      .card-desc{font-size:11.5px;color:rgba(216,45,107,.72);line-height:1.4;font-weight:500}
       .card-badge{position:absolute;top:13px;right:13px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999em}
-      .badge-soon{background:rgba(255,255,255,.25);color:#fff}
-      .badge-admin{background:#fff;color:var(--magenta)}
+      .badge-soon{background:rgba(216,45,107,.12);color:var(--magenta)}
+      .badge-admin{background:var(--magenta);color:#fff}
       .card.soon{opacity:.6}
-      .card.soon .ico{background:rgba(255,255,255,.55)}
+      .card.soon .ico{background:rgba(216,45,107,.5)}
 
       .empty{text-align:center;padding:60px 20px;color:var(--grey);font-weight:600;grid-column:1/-1}
       .empty-ico{font-size:40px;margin-bottom:12px}
