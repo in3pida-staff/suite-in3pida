@@ -18,13 +18,12 @@
         --display:'Anton',var(--font);
       }
       *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:var(--font);color:var(--ink);min-height:100vh;
-        background-color:#fbe3ee;
-        background-image:repeating-linear-gradient(135deg,
-          rgba(216,45,107,.16) 0px,
-          rgba(216,45,107,.16) 230px,
-          rgba(216,45,107,.30) 230px,
-          rgba(216,45,107,.30) 460px);
+      body{font-family:var(--font);color:#fff;min-height:100vh;
+        background-color:#d82d6b;
+        background-image:url(images/letto.svg);
+        background-repeat:no-repeat;
+        background-position:center 84%;
+        background-size:300px auto;
         background-attachment:fixed}
 
       /* NAVBAR */
@@ -32,15 +31,15 @@
       .nav-inner{max-width:1120px;margin:0 auto;height:100%;padding:0 26px;display:flex;align-items:center;justify-content:space-between}
       .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
       .nav-logo img{height:28px;object-fit:contain}
-      .nav-logo .badge{background:var(--magenta);color:#fff;font-size:10px;font-weight:800;padding:3px 11px;border-radius:999em;text-transform:uppercase;letter-spacing:.06em}
+      .nav-logo .badge{background:#fff;color:var(--magenta);font-size:10px;font-weight:800;padding:3px 11px;border-radius:999em;text-transform:uppercase;letter-spacing:.06em}
       .nav-right{display:flex;align-items:center;position:relative}
       .user-pill{display:flex;align-items:center;gap:11px;cursor:pointer;padding:6px 10px 6px 6px;border-radius:999em;transition:.15s}
-      .user-pill:hover{background:#f5f5f9}
-      .avatar{width:38px;height:38px;border-radius:50%;background:var(--magenta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden;flex-shrink:0}
+      .user-pill:hover{background:rgba(255,255,255,.15)}
+      .avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.85);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden;flex-shrink:0}
       .avatar img{width:100%;height:100%;object-fit:cover}
       .user-meta{display:flex;flex-direction:column;line-height:1.25}
-      .user-name{font-size:13px;font-weight:700}
-      .user-sub{font-size:11px;color:var(--grey);font-weight:600}
+      .user-name{font-size:13px;font-weight:700;color:#fff}
+      .user-sub{font-size:11px;color:rgba(255,255,255,.8);font-weight:600}
       .dd{position:absolute;top:56px;right:0;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 14px 44px rgba(24,24,52,.16);min-width:230px;overflow:hidden;display:none;z-index:60}
       .dd-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center}
       .dd-email{font-size:11.5px;color:var(--grey);word-break:break-all;font-weight:600}
@@ -52,32 +51,31 @@
       /* HEADER pagina */
       .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
       .head{padding:40px 0 26px}
-      .hi{font-size:13px;font-weight:800;color:var(--cyan);margin-bottom:7px;text-transform:uppercase;letter-spacing:.1em}
-      .h1{font-family:var(--display);font-size:46px;line-height:1.0;text-transform:uppercase;letter-spacing:.005em;color:var(--magenta)}
-      .h1 em{color:var(--cyan);font-style:normal}
-      .strip{height:74px;background:url(images/pattern.svg) repeat-x left center;background-size:auto 74px;border-radius:16px;margin:8px 0 30px}
-      .lead{font-size:14px;color:var(--grey);margin-top:10px;font-weight:500}
+      .hi{font-size:13px;font-weight:800;color:rgba(255,255,255,.92);margin-bottom:8px;text-transform:uppercase;letter-spacing:.12em}
+      .h1{font-family:var(--display);font-size:58px;line-height:.98;text-transform:uppercase;letter-spacing:.012em;color:transparent;-webkit-text-stroke:1.7px #fff}
+      .h1 em{color:transparent;font-style:normal}
+      .lead{font-size:14px;color:rgba(255,255,255,.92);margin-top:12px;font-weight:500}
 
       /* GRID */
-      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(164px,1fr));gap:14px;padding-bottom:64px}
-      .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;text-align:left;transition:transform .16s,box-shadow .16s,border-color .16s;position:relative;display:flex;flex-direction:column;min-height:112px;box-shadow:0 2px 14px rgba(24,24,52,.06)}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:26px;padding-bottom:80px}
+      .card{background:rgba(255,255,255,.07);border:1.6px solid rgba(255,255,255,.92);border-radius:18px;padding:16px;text-align:left;transition:transform .16s,background .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden;box-shadow:7px 7px 0 -2px rgba(255,255,255,.85),14px 14px 0 -3px rgba(255,255,255,.42)}
       .card.clickable{cursor:pointer}
-      .card.clickable:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(24,24,52,.16);border-color:transparent}
-      .ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:11px}
-      .ico svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-      .card-label{font-size:14px;font-weight:800;margin-bottom:3px;letter-spacing:-.01em}
-      .card-desc{font-size:11.5px;color:var(--grey);line-height:1.4;font-weight:500}
+      .card.clickable:hover{transform:translateY(-4px);background:rgba(255,255,255,.16)}
+      .ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+      .ico svg{width:22px;height:22px;stroke:var(--magenta);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .card-label{font-size:14.5px;font-weight:800;margin-bottom:3px;letter-spacing:-.01em;color:#fff}
+      .card-desc{font-size:11.5px;color:rgba(255,255,255,.85);line-height:1.4;font-weight:500}
       .card-badge{position:absolute;top:13px;right:13px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999em}
-      .badge-soon{background:#f0f1f5;color:#9a9ab0}
-      .badge-admin{background:rgba(0,155,185,.13);color:var(--cyan2)}
-      .card.soon{opacity:.7}
-      .card.soon .ico{filter:grayscale(.6) opacity(.85)}
+      .badge-soon{background:rgba(255,255,255,.25);color:#fff}
+      .badge-admin{background:#fff;color:var(--magenta)}
+      .card.soon{opacity:.6}
+      .card.soon .ico{background:rgba(255,255,255,.55)}
 
       .empty{text-align:center;padding:60px 20px;color:var(--grey);font-weight:600;grid-column:1/-1}
       .empty-ico{font-size:40px;margin-bottom:12px}
 
       /* ADMIN */
-      .back-link{background:none;border:none;color:var(--magenta);font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);padding:8px 0;margin-bottom:2px}
+      .back-link{background:none;border:none;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);padding:8px 0;margin-bottom:2px}
       .toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
       .input{padding:12px 15px;border:1.5px solid var(--border);border-radius:14px;font-size:13px;font-weight:500;font-family:var(--font);background:#fff;outline:none}
       .input:focus{border-color:var(--magenta);box-shadow:0 0 0 3px rgba(216,45,107,.08)}
@@ -149,7 +147,7 @@
 
   <nav class="navbar">
     <div class="nav-inner">
-      <div class="nav-logo" id="logo-home"><img src="images/logo.png" alt="in3pida"><span class="badge">suite</span></div>
+      <div class="nav-logo" id="logo-home"><img src="images/logo-bianco.png" alt="in3pida"><span class="badge">suite</span></div>
       <div class="nav-right">
         <div class="user-pill" id="user-pill">
           <div class="avatar" id="nav-avatar">U</div>
@@ -289,13 +287,13 @@
       const soon=!app.url;
       cards.push(`<div class="card ${soon?'soon':'clickable'}" ${soon?'':`data-app="${app.id}"`}>
         ${soon?'<span class="card-badge badge-soon">Prossimamente</span>':''}
-        <div class="ico" style="background:${app.tint}">${svgIcon(app.id)}</div>
+        <div class="ico">${svgIcon(app.id)}</div>
         <div class="card-label">${esc(app.label)}</div>
         <div class="card-desc">${esc(app.description)}</div></div>`);
     });
     if(IS_ADMIN) cards.push(`<div class="card clickable" data-admin="users">
       <span class="card-badge badge-admin">Admin</span>
-      <div class="ico" style="background:${"#009bb9"}">${svgIcon('users')}</div>
+      <div class="ico">${svgIcon('users')}</div>
       <div class="card-label">Utenti</div>
       <div class="card-desc">Gestisci accessi e funzionalità degli utenti</div></div>`);
     if(!cards.length){ grid.innerHTML=`<div class="empty"><div class="empty-ico">🔒</div><div>Non hai ancora nessuna app assegnata.<br>Contatta l'amministratore.</div></div>`; return; }
