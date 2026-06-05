@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700;800&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       :root{
         --magenta:#d82d6b; --magenta2:#bd2059; --cyan:#009bb9; --cyan2:#0088a2;
@@ -15,7 +15,6 @@
         --red-bg:#fee2e2; --red-text:#dc2626;
         --font:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         --display:'Anton',var(--font);
-        --hand:'Nanum Pen Script',cursive;
       }
       *{box-sizing:border-box;margin:0;padding:0}
       body{font-family:var(--font);color:var(--ink);min-height:100vh;background:#fff;
@@ -26,9 +25,9 @@
       .card{background:#fff;border:1px solid var(--border);border-radius:28px;box-shadow:0 24px 70px rgba(24,24,52,.12);
         padding:44px 40px 34px;width:100%;max-width:410px;text-align:center}
       .logo img{height:38px;object-fit:contain}
-      .hi{font-family:var(--hand);font-size:26px;color:var(--cyan);line-height:1;margin:20px 0 2px}
-      .title{font-family:var(--display);font-size:34px;letter-spacing:.01em;color:var(--ink);text-transform:uppercase}
-      .title em{color:var(--magenta);font-style:normal}
+      .strip{height:30px;background:url(images/pattern.svg) repeat-x left center;background-size:auto 30px;border-radius:8px;margin:22px 0 4px}
+      .title{font-family:var(--display);font-size:36px;letter-spacing:.01em;color:var(--magenta);text-transform:uppercase}
+      .title em{color:var(--cyan);font-style:normal}
       .sub{font-size:13px;color:var(--grey);margin:10px 0 28px;font-weight:500}
       .group{margin-bottom:15px;text-align:left}
       .label{font-size:12px;font-weight:700;margin-bottom:7px;display:block}
@@ -49,7 +48,7 @@
 <body>
     <div class="card">
         <div class="logo"><img src="images/logo.png" alt="in3pida"></div>
-        <div class="hi">ciao!</div>
+        <div class="strip"></div>
         <div class="title">la tua <em>suite</em></div>
         <div class="sub">Accedi al tuo hub di applicazioni</div>
 
