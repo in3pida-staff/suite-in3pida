@@ -22,8 +22,8 @@
         background-color:#d82d6b;
         background-image:url(images/letto.svg);
         background-repeat:no-repeat;
-        background-position:right -150px bottom 20px;
-        background-size:660px auto;
+        background-position:right -270px bottom 20px;
+        background-size:680px auto;
         background-attachment:fixed}
 
       /* NAVBAR */
@@ -52,16 +52,15 @@
       .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
       .head{padding:40px 0 26px}
       .hi{font-size:13px;font-weight:800;color:rgba(255,255,255,.92);margin-bottom:8px;text-transform:uppercase;letter-spacing:.12em}
-      .h1{font-family:var(--display);font-size:74px;line-height:.96;text-transform:uppercase;letter-spacing:.012em;color:#fff}
+      .h1{font-family:var(--display);font-size:92px;line-height:.94;text-transform:uppercase;letter-spacing:.012em;color:#fff}
       .h1 .dot{display:inline-block;width:.15em;height:.15em;border-radius:50%;background:var(--cyan);vertical-align:baseline;margin-left:.05em}
       .lead{font-size:14px;color:rgba(255,255,255,.92);margin-top:12px;font-weight:500}
 
       /* GRID */
       .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:44px;padding-bottom:80px}
-      .card{background:#e0588a;border:2px solid #fff;border-radius:28px;padding:20px;text-align:left;transition:transform .16s,background .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden}
-      .card::before{content:"";position:absolute;top:9px;left:9px;width:68%;height:68%;border:2px solid #fff;border-right:0;border-bottom:0;border-top-left-radius:20px;pointer-events:none}
+      .card{background:linear-gradient(180deg,#ec79a4 0%,#cf2a63 100%);border:2px solid #fff;border-radius:28px;padding:20px;text-align:left;transition:transform .16s,filter .16s;position:relative;display:flex;flex-direction:column;aspect-ratio:1;overflow:hidden}
       .card.clickable{cursor:pointer}
-      .card.clickable:hover{transform:translateY(-4px);background:#e96e9b}
+      .card.clickable:hover{transform:translateY(-4px);filter:brightness(1.08)}
       .ico{width:42px;height:42px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
       .ico svg{width:22px;height:22px;stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
       .card-label{font-family:var(--display);font-size:22px;font-weight:400;margin-bottom:5px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.05}
