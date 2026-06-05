@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>in3pida Suite</title>
+    <style>
+      :root{
+        --magenta:#d82d6b; --magenta2:#b8235a; --cyan:#00bcd4; --cyan2:#0097a7;
+        --bg:#f5f6fa; --white:#fff; --border:#e8e8e8;
+        --dark:#181834; --grey:#4a4a6a;
+        --green-bg:#dcfce7; --green-text:#16a34a;
+        --red-bg:#fee2e2; --red-text:#dc2626;
+        --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      }
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:var(--font);background:var(--bg);color:var(--dark);min-height:100vh}
+
+      /* NAVBAR */
+      .navbar{height:56px;background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+      .navbar-inner{max-width:1100px;margin:0 auto;height:100%;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+      .navbar-logo{font-size:20px;font-weight:800;color:var(--magenta);letter-spacing:-.02em;cursor:pointer}
+      .navbar-logo .badge{display:inline-block;margin-left:8px;background:var(--cyan);color:#fff;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;vertical-align:middle}
+      .navbar-right{display:flex;align-items:center;gap:14px;position:relative}
+      .navbar-user{display:flex;align-items:center;gap:10px;cursor:pointer;padding:5px 8px;border-radius:10px;transition:.15s}
+      .navbar-user:hover{background:#f4f4f8}
+      .navbar-avatar{width:32px;height:32px;border-radius:50%;background:var(--magenta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+      .navbar-user-text{display:flex;flex-direction:column;line-height:1.2}
+      .navbar-user-name{font-size:13px;font-weight:700}
+      .navbar-user-sub{font-size:11px;color:var(--grey)}
+      .dropdown{position:absolute;top:48px;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);min-width:200px;overflow:hidden;display:none}
+      .dropdown-header{padding:14px 16px;border-bottom:1px solid var(--border)}
+      .dropdown-email{font-size:12px;color:var(--grey);word-break:break-all}
+      .dropdown-item{width:100%;text-align:left;padding:11px 16px;background:none;border:none;font-size:13px;font-family:var(--font);cursor:pointer;color:var(--dark)}
+      .dropdown-item:hover{background:#f5f6fa}
+      .dropdown-item.logout{color:var(--red-text)}
+
+      /* LAYOUT */
+      .wrap{max-width:1100px;margin:0 auto;padding:48px 24px}
+      .page-title{font-size:24px;font-weight:800;margin-bottom:4px}
+      .page-sub{font-size:14px;color:var(--grey);margin-bottom:36px}
+
+      /* GRID */
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+      .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;text-align:left;transition:.18s;position:relative;display:flex;flex-direction:column;min-height:170px}
+      .card.clickable{cursor:pointer}
+      .card.clickable:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.10);border-color:#dcdce4}
+      .card-icon{font-size:34px;margin-bottom:14px;line-height:1}
+      .card-label{font-size:16px;font-weight:800;margin-bottom:6px}
+      .card-desc{font-size:13px;color:var(--grey);line-height:1.4;flex:1}
+      .card-badge{position:absolute;top:16px;right:16px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:20px}
+      .badge-soon{background:#f1f5f9;color:#64748b}
+      .badge-admin{background:rgba(0,188,212,.12);color:var(--cyan2)}
+      .card.soon{opacity:.7}
+      .card-arrow{margin-top:14px;font-size:13px;font-weight:700;color:var(--magenta)}
+
+      .empty{text-align:center;padding:60px 20px;color:var(--grey)}
+      .empty-icon{font-size:40px;margin-bottom:12px}
+
+      /* ADMIN — USERS */
+      .back-link{background:none;border:none;color:var(--magenta);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);margin-bottom:18px;padding:0}
+      .toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+      .input{padding:10px 13px;border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--font);background:#fff;outline:none}
+      .input:focus{border-color:var(--magenta)}
+      .btn{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);border:none}
+      .btn-primary{background:var(--magenta);color:#fff}
+      .btn-primary:hover{background:var(--magenta2)}
+      .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--dark)}
+      .btn-ghost:hover{border-color:var(--magenta);color:var(--magenta)}
+      .btn-danger{background:#fff;border:1px solid var(--red-text);color:var(--red-text)}
+      .btn-danger:hover{background:var(--red-bg)}
+      table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+      th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);padding:12px 16px;background:#fafafb;border-bottom:1px solid var(--border)}
+      td{padding:14px 16px;font-size:13px;border-bottom:1px solid #f0f0f3}
+      tr:last-child td{border-bottom:none}
+      tr.row-click{cursor:pointer}
+      tr.row-click:hover td{background:#fafaff}
+      .pill{display:inline-block;background:rgba(0,188,212,.12);color:var(--cyan2);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+
+      /* DETTAGLIO UTENTE */
+      .perm-app{border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;background:#fff}
+      .perm-app-head{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+      .perm-app-icon{font-size:22px}
+      .perm-app-label{font-size:15px;font-weight:800;flex:1}
+      .switch{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+      .perm-body{margin-top:14px;padding-top:14px;border-top:1px solid #f0f0f3;display:none}
+      .perm-body.open{display:block}
+      .perm-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+      .perm-row label{font-size:13px;font-weight:600}
+      select.input{cursor:pointer}
+      .features-box{margin-top:6px;display:none}
+      .features-box.open{display:block}
+      .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
+      .feat{display:flex;align-items:center;gap:7px;font-size:13px;background:#f7f7fb;padding:8px 11px;border-radius:9px;cursor:pointer}
+      .save-bar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:20px 0;display:flex;gap:10px;justify-content:flex-end}
+      .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:12px 22px;border-radius:30px;font-size:13px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.2);opacity:0;transition:.2s;pointer-events:none;z-index:100}
+      .toast.show{opacity:1}
+      .notice{background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px;font-size:13px;color:var(--grey);line-height:1.6}
+      .notice code{background:#f0f0f4;padding:2px 7px;border-radius:6px;font-size:12px}
+    </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <div class="navbar-logo" id="logo-home">in3pida<span class="badge">suite</span></div>
+      <div class="navbar-right">
+        <div class="navbar-user" id="user-pill">
+          <div class="navbar-avatar" id="nav-avatar">U</div>
+          <div class="navbar-user-text">
+            <div class="navbar-user-name" id="nav-name">Utente</div>
+            <div class="navbar-user-sub" id="nav-role">—</div>
+          </div>
+        </div>
+        <div class="dropdown" id="dropdown">
+          <div class="dropdown-header"><div class="dropdown-email" id="dd-email"></div></div>
+          <button class="dropdown-item logout" id="dd-logout">Esci</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap" id="view-home">
+    <div class="page-title">Le tue applicazioni</div>
+    <div class="page-sub">Scegli un'app per accedere. L'accesso è automatico, senza fare di nuovo il login.</div>
+    <div class="grid" id="app-grid"></div>
+  </div>
+
+  <div class="wrap" id="view-users" style="display:none">
+    <button class="back-link" id="users-back">← Torna alle app</button>
+    <div class="page-title">Gestione utenti</div>
+    <div class="page-sub">Assegna le applicazioni e le funzionalità visibili a ciascun utente.</div>
+    <div class="toolbar">
+      <input class="input" id="new-email" type="email" placeholder="email@esempio.it" style="min-width:240px">
+      <button class="btn btn-primary" id="btn-add">+ Aggiungi utente</button>
+    </div>
+    <div id="users-content"></div>
+  </div>
+
+  <div class="wrap" id="view-detail" style="display:none">
+    <button class="back-link" id="detail-back">← Torna agli utenti</button>
+    <div class="page-title" id="detail-title">Permessi utente</div>
+    <div class="page-sub" id="detail-sub"></div>
+    <div id="detail-apps"></div>
+    <div class="save-bar">
+      <button class="btn btn-danger" id="btn-remove">Rimuovi utente</button>
+      <button class="btn btn-primary" id="btn-save">Salva permessi</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script>
+  // ─── CONFIG ──────────────────────────────────────────────────────────────
+  const SUPABASE_URL = 'https://yyauvoqjdzrbmebeafit.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5YXV2b3FqZHpyYm1lYmVhZml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3OTM2MDAsImV4cCI6MjA5NTM2OTYwMH0.M6kD56PEO_UcJ68Vjquo03vuORjv62MflIzGLzYKN9w';
+  const ADMIN_EMAIL = 'mario@in3pida.it';
+  const _SB = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ─── REGISTRO APP — aggiungi un oggetto qui per una nuova app ─────────────
+  const APPS = [
+    { id:'monitoring',    label:'in3pida Form',         url:'https://monitoring.in3pida.it', icon_emoji:'🔌', description:'Monitoring plugin e siti',  features:['statistiche','crm','impostazioni','semafori','date_chiuse','minimum_stay'] },
+    { id:'geo',           label:'GEO',                  url:'https://isi.in3pida.it',        icon_emoji:'🌍', description:'Sito Intelligente AI',      features:['benchmark','utenti','aggiornamenti'] },
+    { id:'smart-working', label:'Smart Working',        url:'',                              icon_emoji:'💼', description:'Gestione lavoro',          features:[] },
+    { id:'bi',            label:'Business Intelligence', url:'',                             icon_emoji:'📊', description:'Analisi dati hotel',       features:[] },
+  ];
+
+  // Etichette leggibili per le funzionalità
+  const FEATURE_LABELS = {
+    statistiche:'Statistiche', crm:'CRM', impostazioni:'Impostazioni', semafori:'Semafori',
+    date_chiuse:'Date chiuse', minimum_stay:'Minimum stay',
+    benchmark:'Benchmark', utenti:'Utenti', aggiornamenti:'Aggiornamenti',
+  };
+  const ROLES = ['user','admin','superadmin','custom'];
+  const featLabel = f => FEATURE_LABELS[f] || f;
+
+  let ME = null;        // sessione utente corrente
+  let IS_ADMIN = false;
+  let MY_PERMS = {};    // app_id -> row (per l'utente corrente)
+
+  // ─── INIT ────────────────────────────────────────────────────────────────
+  (async () => {
+    const { data:{ session } } = await _SB.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+    ME = session.user;
+    IS_ADMIN = (ME.email || '').toLowerCase() === ADMIN_EMAIL;
+
+    // intestazione utente
+    const name = ME.user_metadata?.full_name || (ME.email || '').split('@')[0];
+    document.getElementById('nav-name').textContent = name;
+    document.getElementById('nav-role').textContent = IS_ADMIN ? 'Amministratore' : 'Utente';
+    document.getElementById('nav-avatar').textContent = (name[0] || 'U').toUpperCase();
+    document.getElementById('dd-email').textContent = ME.email || '';
+
+    // permessi dell'utente
+    const { data: perms } = await _SB.from('suite_permissions').select('*').eq('user_id', ME.id);
+    (perms || []).forEach(p => { MY_PERMS[p.app_id] = p; });
+
+    renderHome();
+  })();
+
+  // ─── HOME — griglia app ────────────────────────────────────────────────────
+  function renderHome(){
+    const grid = document.getElementById('app-grid');
+    let cards = [];
+    APPS.forEach(app => {
+      // admin vede tutto; gli altri solo le app con visible=true
+      const visible = IS_ADMIN || (MY_PERMS[app.id] && MY_PERMS[app.id].visible);
+      if (!visible) return;
+      const soon = !app.url;
+      cards.push(`
+        <div class="card ${soon?'soon':'clickable'}" ${soon?'':`data-app="${app.id}"`}>
+          ${soon?'<span class="card-badge badge-soon">Prossimamente</span>':''}
+          <div class="card-icon">${app.icon_emoji}</div>
+          <div class="card-label">${esc(app.label)}</div>
+          <div class="card-desc">${esc(app.description)}</div>
+          ${soon?'':'<div class="card-arrow">Apri →</div>'}
+        </div>`);
+    });
+
+    if (IS_ADMIN) {
+      cards.push(`
+        <div class="card clickable" data-admin="users">
+          <span class="card-badge badge-admin">Admin</span>
+          <div class="card-icon">👥</div>
+          <div class="card-label">Utenti</div>
+          <div class="card-desc">Gestisci accessi e funzionalità degli utenti</div>
+          <div class="card-arrow">Apri →</div>
+        </div>`);
+    }
+
+    if (!cards.length) {
+      grid.outerHTML = `<div class="empty"><div class="empty-icon">🔒</div><div>Non hai ancora nessuna app assegnata.<br>Contatta l'amministratore.</div></div>`;
+      return;
+    }
+    grid.innerHTML = cards.join('');
+    grid.querySelectorAll('[data-app]').forEach(el => el.onclick = () => openApp(el.dataset.app));
+    grid.querySelectorAll('[data-admin="users"]').forEach(el => el.onclick = openUsers);
+  }
+
+  // ─── SSO — apre l'app passando i token nel fragment ───────────────────────
+  async function openApp(appId){
+    const app = APPS.find(a => a.id === appId);
+    if (!app || !app.url) return;
+    const { data:{ session } } = await _SB.auth.getSession();
+    if (!session) { window.location.href = 'login.html'; return; }
+    const frag = `access_token=${session.access_token}`
+               + `&refresh_token=${session.refresh_token}`
+               + `&expires_in=3600&token_type=bearer&type=login`;
+    window.location.href = app.url.replace(/\/$/,'') + '/#' + frag;
+  }
+
+  // ─── DROPDOWN / LOGOUT ─────────────────────────────────────────────────────
+  document.getElementById('user-pill').onclick = (e) => {
+    e.stopPropagation();
+    const d = document.getElementById('dropdown');
+    d.style.display = d.style.display === 'block' ? 'none' : 'block';
+  };
+  document.addEventListener('click', () => document.getElementById('dropdown').style.display = 'none');
+  document.getElementById('dd-logout').onclick = async () => { await _SB.auth.signOut(); window.location.href = 'login.html'; };
+  document.getElementById('logo-home').onclick = () => showView('home');
+
+  // ─── GESTIONE UTENTI (solo admin) ──────────────────────────────────────────
+  function showView(v){
+    document.getElementById('view-home').style.display   = v==='home'   ? 'block' : 'none';
+    document.getElementById('view-users').style.display  = v==='users'  ? 'block' : 'none';
+    document.getElementById('view-detail').style.display = v==='detail' ? 'block' : 'none';
+  }
+  document.getElementById('users-back').onclick  = () => showView('home');
+  document.getElementById('detail-back').onclick = () => openUsers();
+
+  let ALL_USERS = [];   // [{id,email,last_sign_in_at}]
+  let ALL_PERMS = [];   // tutte le righe suite_permissions
+
+  async function adminFetch(method, body){
+    const { data:{ session } } = await _SB.auth.getSession();
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/suite-admin-users`, {
+      method,
+      headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type':'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!resp.ok) throw new Error((await resp.json().catch(()=>({}))).error || resp.statusText);
+    return resp.json();
+  }
+
+  async function openUsers(){
+    if (!IS_ADMIN) return;
+    showView('users');
+    const box = document.getElementById('users-content');
+    box.innerHTML = `<div class="notice">Caricamento utenti…</div>`;
+    try {
+      ALL_USERS = await adminFetch('GET');
+      const { data: perms } = await _SB.from('suite_permissions').select('*');
+      ALL_PERMS = perms || [];
+      renderUsersTable();
+    } catch (e) {
+      box.innerHTML = `<div class="notice">
+        <strong>Gestione utenti non ancora attiva.</strong><br>
+        Per abilitarla, deploya la Edge Function:<br><br>
+        <code>supabase functions deploy suite-admin-users</code><br><br>
+        Dettaglio: ${esc(e.message)}</div>`;
+    }
+  }
+
+  function renderUsersTable(){
+    const box = document.getElementById('users-content');
+    if (!ALL_USERS.length) { box.innerHTML = `<div class="notice">Nessun utente registrato.</div>`; return; }
+    const rows = ALL_USERS.map(u => {
+      const n = ALL_PERMS.filter(p => p.user_id === u.id && p.visible).length;
+      const last = u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Mai';
+      return `<tr class="row-click" data-uid="${u.id}">
+        <td><strong>${esc(u.email)}</strong></td>
+        <td><span class="pill">${n} app</span></td>
+        <td style="color:var(--grey)">${last}</td>
+      </tr>`;
+    }).join('');
+    box.innerHTML = `<table><thead><tr><th>Email</th><th>App assegnate</th><th>Ultimo accesso</th></tr></thead><tbody>${rows}</tbody></table>`;
+    box.querySelectorAll('[data-uid]').forEach(r => r.onclick = () => openDetail(r.dataset.uid));
+  }
+
+  // ─── DETTAGLIO UTENTE ──────────────────────────────────────────────────────
+  let DETAIL_UID = null;
+  function openDetail(uid){
+    DETAIL_UID = uid;
+    const user = ALL_USERS.find(u => u.id === uid);
+    const userPerms = {};
+    ALL_PERMS.filter(p => p.user_id === uid).forEach(p => userPerms[p.app_id] = p);
+    document.getElementById('detail-title').textContent = user ? user.email : 'Permessi utente';
+    document.getElementById('detail-sub').textContent = 'Spunta le app visibili, scegli il ruolo e — se "personalizzato" — le singole funzionalità.';
+
+    document.getElementById('detail-apps').innerHTML = APPS.map(app => {
+      const p = userPerms[app.id] || {};
+      const checked = p.visible ? 'checked' : '';
+      const role = p.role || 'user';
+      const feats = p.features || {};
+      const featChecks = app.features.map(f => `
+        <label class="feat"><input type="checkbox" data-feat="${f}" ${feats[f]?'checked':''}> ${featLabel(f)}</label>`).join('');
+      return `
+        <div class="perm-app" data-app="${app.id}">
+          <div class="perm-app-head">
+            <span class="perm-app-icon">${app.icon_emoji}</span>
+            <span class="perm-app-label">${esc(app.label)}</span>
+            <label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> App visibile</label>
+          </div>
+          <div class="perm-body ${checked?'open':''}">
+            <div class="perm-row">
+              <label>Ruolo</label>
+              <select class="input role-sel">${ROLES.map(r=>`<option value="${r}" ${r===role?'selected':''}>${roleLabel(r)}</option>`).join('')}</select>
+            </div>
+            ${app.features.length ? `<div class="features-box ${role==='custom'?'open':''}">
+              <label style="font-size:12px;font-weight:700;color:var(--grey)">Funzionalità disponibili</label>
+              <div class="features-grid">${featChecks}</div>
+            </div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+
+    // interattività
+    document.querySelectorAll('.perm-app').forEach(card => {
+      const body = card.querySelector('.perm-body');
+      card.querySelector('.vis-toggle').onchange = e => body.classList.toggle('open', e.target.checked);
+      const roleSel = card.querySelector('.role-sel');
+      const fbox = card.querySelector('.features-box');
+      if (roleSel && fbox) roleSel.onchange = e => fbox.classList.toggle('open', e.target.value === 'custom');
+    });
+    showView('detail');
+  }
+
+  document.getElementById('btn-save').onclick = async () => {
+    const rows = [];
+    document.querySelectorAll('.perm-app').forEach(card => {
+      const appId = card.dataset.app;
+      const visible = card.querySelector('.vis-toggle').checked;
+      const role = card.querySelector('.role-sel')?.value || 'user';
+      const features = {};
+      card.querySelectorAll('[data-feat]').forEach(cb => { features[cb.dataset.feat] = cb.checked; });
+      rows.push({ user_id: DETAIL_UID, app_id: appId, visible, role, features, updated_at: new Date().toISOString() });
+    });
+    const btn = document.getElementById('btn-save'); btn.disabled = true; btn.textContent = 'Salvataggio…';
+    const { error } = await _SB.from('suite_permissions').upsert(rows, { onConflict: 'user_id,app_id' });
+    btn.disabled = false; btn.textContent = 'Salva permessi';
+    if (error) { toast('Errore: ' + error.message); return; }
+    toast('Permessi salvati ✓');
+    const { data: perms } = await _SB.from('suite_permissions').select('*'); ALL_PERMS = perms || [];
+  };
+
+  document.getElementById('btn-remove').onclick = async () => {
+    const user = ALL_USERS.find(u => u.id === DETAIL_UID);
+    if (!confirm(`Rimuovere tutti i permessi di ${user?.email}?\n(L'account di accesso NON viene eliminato.)`)) return;
+    const { error } = await _SB.from('suite_permissions').delete().eq('user_id', DETAIL_UID);
+    if (error) { toast('Errore: ' + error.message); return; }
+    toast('Permessi rimossi ✓');
+    await openUsers();
+  };
+
+  document.getElementById('btn-add').onclick = async () => {
+    const email = document.getElementById('new-email').value.trim().toLowerCase();
+    if (!email) { toast('Inserisci un\'email'); return; }
+    const btn = document.getElementById('btn-add'); btn.disabled = true;
+    try {
+      const found = ALL_USERS.find(u => (u.email||'').toLowerCase() === email);
+      if (!found) { toast('Nessun account con questa email. Crealo prima in Supabase Auth.'); btn.disabled = false; return; }
+      document.getElementById('new-email').value = '';
+      openDetail(found.id);
+    } catch (e) { toast('Errore: ' + e.message); }
+    btn.disabled = false;
+  };
+
+  // ─── UTILS ──────────────────────────────────────────────────────────────────
+  function roleLabel(r){ return {user:'Utente',admin:'Admin',superadmin:'Superadmin',custom:'Personalizzato'}[r]||r; }
+  function esc(s){ return String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  let toastTimer;
+  function toast(msg){
+    const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  </script>
+</body>
+</html>

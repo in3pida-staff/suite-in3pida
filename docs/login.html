@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>in3pida Suite — Accedi</title>
+    <style>
+      :root{
+        --magenta:#d82d6b; --magenta2:#b8235a; --cyan:#00bcd4;
+        --bg:#f5f6fa; --white:#fff; --border:#e8e8e8;
+        --dark:#181834; --grey:#4a4a6a; --red-bg:#fee2e2; --red-text:#dc2626;
+        --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      }
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:var(--font);background:var(--bg);color:var(--dark)}
+      .login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+      .login-card{background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.10);padding:44px 40px;width:100%;max-width:400px;text-align:center}
+      .login-logo{font-size:26px;font-weight:800;color:var(--magenta);letter-spacing:-.02em;margin-bottom:6px}
+      .login-logo .badge{display:inline-block;margin-left:8px;background:var(--cyan);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;vertical-align:middle;letter-spacing:.02em}
+      .login-sub{font-size:13px;color:var(--grey);margin-bottom:32px}
+      .form-group{margin-bottom:16px;text-align:left}
+      .form-label{font-size:12px;font-weight:700;margin-bottom:6px;display:block}
+      .form-input{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--font);background:#fafafa;outline:none;transition:.15s}
+      .form-input:focus{border-color:var(--magenta);background:#fff}
+      .btn-primary{width:100%;padding:12px;background:var(--magenta);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);transition:.15s;margin-top:4px}
+      .btn-primary:hover{background:var(--magenta2)}
+      .btn-primary:disabled{opacity:.6;cursor:default}
+      .btn-link{background:none;border:none;color:var(--magenta);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);padding:0}
+      .login-msg{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;text-align:left}
+      .login-msg-success{background:#e6f9f0;color:#1a7a4a}
+      .login-msg-error{background:var(--red-bg);color:var(--red-text)}
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-logo">in3pida<span class="badge">suite</span></div>
+            <div class="login-sub">Accedi al tuo hub di applicazioni</div>
+
+            <div id="msg-success" class="login-msg login-msg-success" style="display:none"></div>
+            <div id="msg-error"   class="login-msg login-msg-error"   style="display:none"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" class="form-input" id="email" placeholder="nome@in3pida.it" autocomplete="email" required>
+                </div>
+                <div class="form-group">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                        <label class="form-label" style="margin:0" for="password">Password</label>
+                        <button type="button" id="btn-forgot" class="btn-link">Password dimenticata?</button>
+                    </div>
+                    <input type="password" class="form-input" id="password" placeholder="••••••••" autocomplete="current-password" required>
+                </div>
+                <button class="btn-primary" type="submit" id="btn-login">Accedi</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script>
+    const _SB = window.supabase.createClient(
+        'https://yyauvoqjdzrbmebeafit.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5YXV2b3FqZHpyYm1lYmVhZml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3OTM2MDAsImV4cCI6MjA5NTM2OTYwMH0.M6kD56PEO_UcJ68Vjquo03vuORjv62MflIzGLzYKN9w'
+    );
+
+    // Se già loggato → vai alla suite
+    _SB.auth.getSession().then(({ data: { session } }) => {
+        if (session) window.location.href = 'index.html';
+    });
+
+    document.getElementById('login-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-login');
+        btn.textContent = '...'; btn.disabled = true;
+        clearMsg();
+        const { error } = await _SB.auth.signInWithPassword({
+            email:    document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+        });
+        if (error) {
+            const msg = error.message.includes('Invalid login') || error.message.includes('invalid_credentials')
+                ? 'Email o password non corrette.'
+                : error.message.includes('Email not confirmed')
+                ? 'Devi confermare la tua email prima di accedere. Controlla la casella di posta.'
+                : error.message;
+            showMsg('error', msg);
+            btn.textContent = 'Accedi'; btn.disabled = false;
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
+
+    document.getElementById('btn-forgot').addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        if (!email) { showMsg('error', 'Inserisci prima la tua email.'); return; }
+        const btn = document.getElementById('btn-forgot');
+        btn.disabled = true; clearMsg();
+        const { error } = await _SB.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://suite.in3pida.it/index.html',
+        });
+        btn.disabled = false;
+        if (error) showMsg('error', error.message);
+        else showMsg('success', 'Email inviata! Controlla la posta e clicca il link per reimpostare la password.');
+    });
+
+    function showMsg(type, text){
+        const s=document.getElementById('msg-success'), e=document.getElementById('msg-error');
+        s.style.display='none'; e.style.display='none';
+        const el=type==='success'?s:e; el.textContent=text; el.style.display='block';
+    }
+    function clearMsg(){
+        document.getElementById('msg-success').style.display='none';
+        document.getElementById('msg-error').style.display='none';
+    }
+    </script>
+</body>
+</html>
