@@ -329,18 +329,27 @@
   };
   document.getElementById('profile-close').onclick=()=>document.getElementById('profile-overlay').classList.remove('open');
   document.getElementById('profile-overlay').onclick=e=>{ if(e.target.id==='profile-overlay') e.currentTarget.classList.remove('open'); };
+  // La foto viene caricata su Supabase Storage e in user_metadata si salva solo
+  // l'URL (corto): così il JWT resta piccolo e la foto resta condivisa fra le app.
   document.getElementById('pf-file').onchange=e=>{
     const file=e.target.files[0]; if(!file) return;
     const reader=new FileReader();
-    reader.onload=ev=>{ const img=new Image(); img.onload=async()=>{
-      const S=200,c=document.createElement('canvas'); c.width=S; c.height=S; const ctx=c.getContext('2d');
+    reader.onload=ev=>{ const img=new Image(); img.onload=()=>{
+      const S=256,c=document.createElement('canvas'); c.width=S; c.height=S; const ctx=c.getContext('2d');
       const m=Math.min(img.width,img.height),sx=(img.width-m)/2,sy=(img.height-m)/2;
       ctx.drawImage(img,sx,sy,m,m,0,0,S,S);
-      const dataUrl=c.toDataURL('image/jpeg',0.8);
-      document.getElementById('pf-av').innerHTML=`<img src="${dataUrl}">`;
-      const { error }=await _SB.auth.updateUser({ data:{ avatar_url:dataUrl } });
-      if(error){ pfMsg('error','Errore foto: '+error.message); return; }
-      const { data:{ user } }=await _SB.auth.getUser(); ME=user; paintUser(); pfMsg('ok','Foto aggiornata ✓');
+      c.toBlob(async (blob)=>{
+        pfMsg('ok','Caricamento foto…');
+        const path=`${ME.id}.jpg`;
+        const { error:upErr }=await _SB.storage.from('avatars').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
+        if(upErr){ pfMsg('error','Errore caricamento: '+upErr.message); return; }
+        const base=_SB.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+        const url=base+'?t='+Date.now();
+        document.getElementById('pf-av').innerHTML=`<img src="${url}">`;
+        const { error }=await _SB.auth.updateUser({ data:{ avatar_url:url } });
+        if(error){ pfMsg('error','Errore foto: '+error.message); return; }
+        const { data:{ user } }=await _SB.auth.getUser(); ME=user; paintUser(); pfMsg('ok','Foto aggiornata ✓');
+      }, 'image/jpeg', 0.85);
     }; img.src=ev.target.result; };
     reader.readAsDataURL(file);
   };
