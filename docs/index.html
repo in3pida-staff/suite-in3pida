@@ -56,20 +56,24 @@
       .h1 .dot{display:inline-block;width:.15em;height:.15em;border-radius:50%;background:var(--cyan);vertical-align:baseline;margin-left:.05em}
       .lead{font-size:14px;color:rgba(255,255,255,.92);margin-top:12px;font-weight:500}
 
-      /* GRID */
-      .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:22px;max-width:840px;padding-bottom:80px}
-      .card{background:linear-gradient(135deg,#f4abc8 0%,#e87aa2 42%,#dd5283 100%);border:2px solid #fff;border-radius:22px;padding:14px;text-align:center;transition:transform .16s,filter .16s;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;aspect-ratio:1;overflow:hidden}
+      /* GRID — riquadri app stile launcher, colori in3pida */
+      .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:30px 22px;max-width:900px;padding-bottom:90px}
+      .card{background:none;border:none;padding:0;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative}
       .card.clickable{cursor:pointer}
-      .card.clickable:hover{transform:translateY(-4px);filter:brightness(1.08)}
-      .ico{width:46px;height:46px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-      .ico svg{width:26px;height:26px;stroke:var(--cyan);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-      .card-label{font-family:var(--display);font-size:17px;font-weight:400;margin-bottom:3px;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.05}
-      .card-desc{font-size:10px;color:rgba(255,255,255,.9);line-height:1.35;font-weight:500}
-      .card-badge{position:absolute;top:13px;right:13px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:999em}
-      .badge-soon{background:rgba(255,255,255,.28);color:#fff}
-      .badge-admin{background:#fff;color:var(--magenta)}
-      .card.soon{opacity:.6}
-      .card.soon .ico{background:rgba(255,255,255,.6)}
+      .tile{width:100%;aspect-ratio:1;background:#fff;border-radius:20px;box-shadow:0 8px 22px rgba(24,24,52,.20);display:flex;align-items:center;justify-content:center;transition:transform .18s ease,box-shadow .18s ease;position:relative;overflow:hidden}
+      .tile:before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,155,185,.09),rgba(216,45,107,.07));opacity:0;transition:opacity .18s}
+      .card.clickable:hover .tile{transform:translateY(-6px);box-shadow:0 18px 34px rgba(24,24,52,.30)}
+      .card.clickable:hover .tile:before{opacity:1}
+      .tile svg{width:58%;height:58%;display:block;position:relative}
+      .card-label{font-family:var(--display);font-size:15px;font-weight:400;letter-spacing:.02em;text-transform:uppercase;color:#fff;line-height:1.1;margin-top:11px}
+      .card-desc{font-size:9.5px;color:rgba(255,255,255,.78);line-height:1.3;font-weight:600;margin-top:3px}
+      .card-badge{position:absolute;top:8px;right:8px;font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999em;z-index:2}
+      .badge-soon{background:var(--ink);color:#fff}
+      .badge-admin{background:var(--cyan);color:#fff}
+      .card.soon{opacity:.55}
+      .card.soon .tile{box-shadow:0 4px 12px rgba(24,24,52,.14)}
+      @media(max-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
+      @media(max-width:620px){.grid{grid-template-columns:repeat(3,1fr);gap:22px 16px}}
 
       .empty{text-align:center;padding:60px 20px;color:var(--grey);font-weight:600;grid-column:1/-1}
       .empty-ico{font-size:40px;margin-bottom:12px}
@@ -96,8 +100,8 @@
       .pill{display:inline-block;background:rgba(0,155,185,.13);color:var(--cyan2);font-size:11px;font-weight:800;padding:4px 12px;border-radius:999em}
       .perm-app{border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;background:#fff}
       .perm-head{display:flex;align-items:center;gap:13px}
-      .perm-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
-      .perm-ico svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .perm-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;border:1px solid var(--border)}
+      .perm-ico svg{width:26px;height:26px}
       .perm-label{font-size:15px;font-weight:800;flex:1}
       .switch{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;cursor:pointer}
       .perm-body{margin-top:15px;padding-top:15px;border-top:1px solid #f1f1f6;display:none}
@@ -231,19 +235,25 @@
   const _SB=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
 
   const APPS=[
-    { id:'monitoring',    label:'in3pida Form',          url:'https://monitoring.in3pida.it', tint:'#d82d6b', description:'Monitoring plugin e siti', features:['statistiche','crm','impostazioni','semafori','date_chiuse','minimum_stay'] },
-    { id:'geo',           label:'GEO',                   url:'https://isi.in3pida.it',        tint:'#009bb9', description:'Sito Intelligente AI',     features:['benchmark','utenti','aggiornamenti'] },
-    { id:'smart-working', label:'Smart Working',         url:'https://smartworking.in3pida.it', tint:'#009bb9', description:'Gestione lavoro',         features:[] },
-    { id:'bi',            label:'Business Intelligence',  url:'',                             tint:'#d82d6b', description:'Analisi dati hotel',      features:[] },
+    { id:'bi',            label:'Business Intelligence', url:'https://bi.in3pida.it',          tint:'#009bb9', description:'Analisi dati hotel',        features:[] },
+    { id:'eletta',        label:'Eletta',                url:'https://app.eletta.it',          tint:'#0d5f75', description:'Posizionamento ricerche AI',features:[] },
+    { id:'sipario',       label:'Sipario',               url:'https://sipario.in3pida.it',     tint:'#d82d6b', description:'Gestione spettacoli',       features:[] },
+    { id:'smart-working', label:'Smart Working',         url:'https://smartworking.in3pida.it',tint:'#e6007e', description:'Gestione lavoro',           features:[] },
+    { id:'monitoring',    label:'in3pida Form',          url:'https://monitoring.in3pida.it',  tint:'#d82d6b', description:'Monitoring plugin e siti',  features:['statistiche','crm','impostazioni','semafori','date_chiuse','minimum_stay'] },
+    { id:'geo',           label:'GEO',                   url:'https://isi.in3pida.it',         tint:'#009bb9', description:'Sito Intelligente AI',      features:['benchmark','utenti','aggiornamenti'] },
   ];
+
   const ICONS={
-    'monitoring':'<path d="M9 3h6l1 4H8l1-4z"/><rect x="5" y="7" width="14" height="14" rx="2"/><path d="M9 12h6M9 16h4"/>',
-    'geo':'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18"/>',
-    'smart-working':'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 13h18"/>',
-    'bi':'<path d="M4 20V4"/><path d="M4 20h16"/><rect x="7" y="12" width="3" height="5"/><rect x="12" y="8" width="3" height="9"/><rect x="17" y="5" width="3" height="12"/>',
-    'users':'<circle cx="9" cy="8" r="3.4"/><path d="M3.5 20a5.5 5.5 0 0111 0"/><path d="M16 5.3a3 3 0 010 5.8"/><path d="M21 20a5 5 0 00-4-4.9"/>',
+    // icone piatte, ognuna con i colori reali della sua app
+    'bi':'<rect x="6" y="27" width="9.5" height="15" rx="3" fill="#009bb9"/><rect x="19.2" y="16" width="9.5" height="26" rx="3" fill="#d82d6b"/><rect x="32.5" y="6" width="9.5" height="36" rx="3" fill="#181834"/>',
+    'eletta':'<rect x="13" y="8" width="21" height="7.5" fill="#c1cbe8"/><path d="M13 19h7.5v9.5a3.5 3.5 0 0 0 3.5 3.5h11V40H24A11 11 0 0 1 13 29z" fill="#0d5f75"/><circle cx="38.5" cy="11.8" r="4.2" fill="#ff8500"/>',
+    'sipario':'<rect x="5" y="6" width="38" height="6" rx="3" fill="#181834"/><path d="M8 12h11c0 12-3.5 22-11 30z" fill="#d82d6b"/><path d="M40 12H29c0 12 3.5 22 11 30z" fill="#b8235a"/><circle cx="24" cy="24" r="5.5" fill="#009bb9"/>',
+    'smart-working':'<path d="M24 5 43 19v5H5v-5z" fill="#e6007e"/><rect x="12" y="25" width="24" height="15" rx="3" fill="#00c2d1"/><rect x="17" y="30" width="14" height="6.5" rx="2" fill="#fff"/><rect x="9" y="40" width="30" height="4" rx="2" fill="#111"/>',
+    'monitoring':'<rect x="6" y="7" width="25" height="33" rx="4" fill="#009bb9"/><rect x="13" y="11" width="27" height="33" rx="4" fill="#d82d6b"/><rect x="18" y="19" width="17" height="3.6" rx="1.8" fill="#fff"/><rect x="18" y="27" width="17" height="3.6" rx="1.8" fill="#fff"/><rect x="18" y="35" width="9" height="3.6" rx="1.8" fill="#fff"/>',
+    'geo':'<circle cx="24" cy="24" r="18" fill="#009bb9"/><ellipse cx="24" cy="24" rx="7.5" ry="18" fill="none" stroke="#fff" stroke-width="3"/><path d="M6 24h36" stroke="#fff" stroke-width="3"/><circle cx="33" cy="14" r="5" fill="#d82d6b"/>',
+    'users':'<circle cx="18" cy="16" r="7.5" fill="#009bb9"/><path d="M4 41a14 14 0 0 1 28 0z" fill="#009bb9"/><circle cx="34" cy="18" r="6" fill="#d82d6b"/><path d="M28 41a11 11 0 0 1 16.5-9.5A11 11 0 0 1 47 41z" fill="#d82d6b"/>',
   };
-  const svgIcon=id=>`<svg viewBox="0 0 24 24">${ICONS[id]||'<circle cx="12" cy="12" r="6"/>'}</svg>`;
+  const svgIcon=id=>`<svg viewBox="0 0 48 48">${ICONS[id]||'<circle cx="24" cy="24" r="14" fill="#009bb9"/>'}</svg>`;
   const FEATURE_LABELS={statistiche:'Statistiche',crm:'CRM',impostazioni:'Impostazioni',semafori:'Semafori',date_chiuse:'Date chiuse',minimum_stay:'Minimum stay',benchmark:'Benchmark',utenti:'Utenti',aggiornamenti:'Aggiornamenti'};
   const ROLES=['user','admin','superadmin','custom'];
   const featLabel=f=>FEATURE_LABELS[f]||f;
@@ -285,17 +295,17 @@
       const visible=IS_ADMIN||(MY_PERMS[app.id]&&MY_PERMS[app.id].visible);
       if(!visible) return;
       const soon=!app.url;
-      cards.push(`<div class="card ${soon?'soon':'clickable'}" ${soon?'':`data-app="${app.id}"`}>
+      cards.push(`<div class="card ${soon?'soon':'clickable'}" ${soon?'':`data-app="${app.id}"`} title="${esc(app.description)}">
         ${soon?'<span class="card-badge badge-soon">Prossimamente</span>':''}
-        <div class="ico">${svgIcon(app.id)}</div>
+        <div class="tile">${svgIcon(app.id)}</div>
         <div class="card-label">${esc(app.label)}</div>
         <div class="card-desc">${esc(app.description)}</div></div>`);
     });
-    if(IS_ADMIN) cards.push(`<div class="card clickable" data-admin="users">
+    if(IS_ADMIN) cards.push(`<div class="card clickable" data-admin="users" title="Gestisci accessi e funzionalità">
       <span class="card-badge badge-admin">Admin</span>
-      <div class="ico">${svgIcon('users')}</div>
+      <div class="tile">${svgIcon('users')}</div>
       <div class="card-label">Utenti</div>
-      <div class="card-desc">Gestisci accessi e funzionalità degli utenti</div></div>`);
+      <div class="card-desc">Accessi e funzionalità</div></div>`);
     if(!cards.length){ grid.innerHTML=`<div class="empty"><div class="empty-ico">🔒</div><div>Non hai ancora nessuna app assegnata.<br>Contatta l'amministratore.</div></div>`; return; }
     grid.innerHTML=cards.join('');
     grid.querySelectorAll('[data-app]').forEach(el=>el.onclick=()=>openApp(el.dataset.app));
@@ -417,7 +427,7 @@
     document.getElementById('detail-apps').innerHTML=APPS.map(app=>{
       const p=up[app.id]||{}; const checked=p.visible?'checked':''; const role=p.role||'user'; const feats=p.features||{};
       const fc=app.features.map(f=>`<label class="feat"><input type="checkbox" data-feat="${f}" ${feats[f]?'checked':''}> ${featLabel(f)}</label>`).join('');
-      return `<div class="perm-app" data-app="${app.id}"><div class="perm-head"><div class="perm-ico" style="background:${app.tint}">${svgIcon(app.id)}</div><span class="perm-label">${esc(app.label)}</span><label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> App visibile</label></div><div class="perm-body ${checked?'open':''}"><div class="perm-row"><label>Ruolo</label><select class="input role-sel">${ROLES.map(r=>`<option value="${r}" ${r===role?'selected':''}>${roleLabel(r)}</option>`).join('')}</select></div>${app.features.length?`<div class="features-box ${role==='custom'?'open':''}"><label style="font-size:12px;font-weight:700;color:var(--grey)">Funzionalità disponibili</label><div class="features-grid">${fc}</div></div>`:''}</div></div>`;
+      return `<div class="perm-app" data-app="${app.id}"><div class="perm-head"><div class="perm-ico">${svgIcon(app.id)}</div><span class="perm-label">${esc(app.label)}</span><label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> App visibile</label></div><div class="perm-body ${checked?'open':''}"><div class="perm-row"><label>Ruolo</label><select class="input role-sel">${ROLES.map(r=>`<option value="${r}" ${r===role?'selected':''}>${roleLabel(r)}</option>`).join('')}</select></div>${app.features.length?`<div class="features-box ${role==='custom'?'open':''}"><label style="font-size:12px;font-weight:700;color:var(--grey)">Funzionalità disponibili</label><div class="features-grid">${fc}</div></div>`:''}</div></div>`;
     }).join('');
     document.querySelectorAll('.perm-app').forEach(card=>{
       const body=card.querySelector('.perm-body');
