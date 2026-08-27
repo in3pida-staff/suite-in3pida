@@ -322,6 +322,10 @@
     window.location.href=app.url.replace(/\/$/,'')+'/#'+frag;
   }
 
+  // tornando indietro col tasto "indietro" il browser ripristina la pagina com'era:
+  // spengo la rotella "Apertura…" altrimenti sembra bloccata
+  window.addEventListener('pageshow',()=>{ document.getElementById('opening').classList.remove('show'); });
+
   // ─── DROPDOWN / PROFILO ───────────────────────────────────────────────────
   document.getElementById('user-pill').onclick=e=>{ e.stopPropagation(); const d=document.getElementById('dropdown'); d.style.display=d.style.display==='block'?'none':'block'; };
   document.addEventListener('click',()=>document.getElementById('dropdown').style.display='none');
