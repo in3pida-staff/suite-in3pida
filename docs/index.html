@@ -236,7 +236,7 @@
 
   const APPS=[
     { id:'bi',            label:'Business Intelligence', url:'https://bi.in3pida.it',          tint:'#009bb9', description:'La Business intelligence per hotel',features:[] },
-    { id:'eletta',        label:'Eletta',                url:'https://app.eletta.it',          tint:'#0d5f75', description:'Posiziona il tuo sito nelle ricerche AI',features:[] },
+    { id:'eletta',        label:'Eletta',                url:'https://app.eletta-ai.it/login.html',tint:'#0d5f75', description:'Posiziona il tuo sito nelle ricerche AI',features:[] },
     { id:'sipario',       label:'Sipario',               url:'https://sipario.in3pida.it',     tint:'#d82d6b', description:'Organizza il tuo evento',features:[] },
     { id:'smart-working', label:'Smart Working',         url:'https://smartworking.in3pida.it',tint:'#e6007e', description:'Prenota i tuoi giorni in smart',features:[] },
     { id:'monitoring',    label:'in3pida Form',          url:'https://monitoring.in3pida.it',  tint:'#d82d6b', description:'Gestisci il form in3pida',features:['statistiche','crm','impostazioni','semafori','date_chiuse','minimum_stay'] },
@@ -321,7 +321,8 @@
     const { data:{ session } }=await _SB.auth.getSession();
     if(!session){ if(scheda) scheda.close(); window.location.href='login.html'; return; }
     const frag=`access_token=${session.access_token}&refresh_token=${session.refresh_token}&expires_in=3600&token_type=bearer&type=login`;
-    const dest=app.url.replace(/\/$/,'')+'/#'+frag;
+    const base=app.url.replace(/\/$/,'');
+    const dest=base+(/\.[a-z]{2,5}$/i.test(base)?'':'/')+'#'+frag;
     if(scheda){ scheda.location.href=dest; document.getElementById('opening').classList.remove('show'); }
     else { window.location.href=dest; }   // se le schede nuove sono bloccate, apro qui
   }
