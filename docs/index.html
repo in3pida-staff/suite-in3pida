@@ -314,12 +314,16 @@
   async function openApp(appId){
     const app=APPS.find(a=>a.id===appId);
     if(!app||!app.url) return;
+    // apro subito la scheda (dentro il click, altrimenti il browser la blocca)
+    const scheda=window.open('','_blank');
     document.getElementById('opening-lbl').textContent='Apertura '+app.label+'…';
     document.getElementById('opening').classList.add('show');
     const { data:{ session } }=await _SB.auth.getSession();
-    if(!session){ window.location.href='login.html'; return; }
+    if(!session){ if(scheda) scheda.close(); window.location.href='login.html'; return; }
     const frag=`access_token=${session.access_token}&refresh_token=${session.refresh_token}&expires_in=3600&token_type=bearer&type=login`;
-    window.location.href=app.url.replace(/\/$/,'')+'/#'+frag;
+    const dest=app.url.replace(/\/$/,'')+'/#'+frag;
+    if(scheda){ scheda.location.href=dest; document.getElementById('opening').classList.remove('show'); }
+    else { window.location.href=dest; }   // se le schede nuove sono bloccate, apro qui
   }
 
   // tornando indietro col tasto "indietro" il browser ripristina la pagina com'era:
