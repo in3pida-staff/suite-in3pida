@@ -121,7 +121,14 @@
       .appchips{display:flex;gap:5px;flex-wrap:wrap}
       .chip{width:28px;height:28px;border-radius:9px;background:#fff;border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center}
       .chip svg{width:18px;height:18px;display:block}
-      .chip.off{opacity:.2}
+      .chip.off{opacity:.18}
+      button.chip{cursor:pointer;padding:0;transition:.15s}
+      button.chip:hover{border-color:var(--magenta);transform:scale(1.12)}
+      th.appcol{text-align:center;padding:12px 6px}
+      .appcol-lbl{font-size:9px;font-weight:800;color:var(--grey);margin:5px auto 0;text-transform:uppercase;letter-spacing:.02em;line-height:1.15;max-width:66px}
+      td.appcell{text-align:center;padding:12px 6px}
+      td.u-open{cursor:pointer}
+      td.u-open:hover .u-name{color:var(--magenta)}
       .acct{border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;background:#fff;color:var(--ink)}
       .acct h4{font-size:14px;font-weight:800;margin-bottom:6px}
       .acct-top{display:flex;gap:16px;align-items:center;margin-bottom:15px}
@@ -199,7 +206,7 @@
     <div class="head" style="padding-bottom:18px">
       <button class="back-link" id="users-back">← Torna alle app</button>
       <div class="h1">gestione <em>utenti</em></div>
-      <div class="lead">Assegna le applicazioni e le funzionalità visibili a ciascun utente.</div>
+      <div class="lead">Clicca un'icona per accendere o spegnere quell'app a quella persona: si salva da solo. Clicca invece il nome per foto e password.</div>
     </div>
     <div class="toolbar">
       <input class="input" id="new-email" type="email" placeholder="email@esempio.it" style="min-width:250px">
@@ -434,17 +441,34 @@
   function renderUsersTable(){
     const box=document.getElementById('users-content');
     if(!ALL_USERS.length){ box.innerHTML=`<div class="notice">Nessun utente registrato.</div>`; return; }
+    const intest=APPS.map(a=>`<th class="appcol"><div class="chip">${svgIcon(a.id)}</div><div class="appcol-lbl">${esc(a.label)}</div></th>`).join('');
     const rows=ALL_USERS.map(u=>{
-      const chips=APPS.map(a=>{ const on=ALL_PERMS.some(p=>p.user_id===u.id&&p.app_id===a.id&&p.visible);
-        return `<span class="chip ${on?'':'off'}" title="${esc(a.label)}">${svgIcon(a.id)}</span>`; }).join('');
+      const celle=APPS.map(a=>{ const on=ALL_PERMS.some(p=>p.user_id===u.id&&p.app_id===a.id&&p.visible);
+        return `<td class="appcell"><button class="chip ${on?'':'off'}" data-u="${u.id}" data-a="${a.id}" title="${esc(a.label)}: ${on?'la vede':'non la vede'}">${svgIcon(a.id)}</button></td>`; }).join('');
       const name=u.user_metadata?.full_name||(u.email||'').split('@')[0];
       const av=u.user_metadata?.avatar_url; const ini=(name[0]||'U').toUpperCase();
       const last=u.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Mai';
-      return `<tr class="row-click" data-uid="${u.id}"><td><div class="u-cell"><div class="u-av">${av?`<img src="${av}">`:ini}</div><div><div style="font-weight:700">${esc(name)}</div><div style="font-size:11.5px;color:var(--grey)">${esc(u.email)}</div></div></div></td><td><div class="appchips">${chips}</div></td><td style="color:var(--grey)">${last}</td></tr>`;
+      return `<tr><td class="u-open" data-uid="${u.id}" title="Apri foto e password"><div class="u-cell"><div class="u-av">${av?`<img src="${av}">`:ini}</div><div><div class="u-name" style="font-weight:700">${esc(name)}</div><div style="font-size:11.5px;color:var(--grey)">${esc(u.email)}</div></div></div></td>${celle}<td style="color:var(--grey)">${last}</td></tr>`;
     }).join('');
-    box.innerHTML=`<table><thead><tr><th>Utente</th><th>App assegnate</th><th>Ultimo accesso</th></tr></thead><tbody>${rows}</tbody></table>`;
+    box.innerHTML=`<table><thead><tr><th>Utente</th>${intest}<th>Ultimo accesso</th></tr></thead><tbody>${rows}</tbody></table>`;
     box.querySelectorAll('[data-uid]').forEach(r=>r.onclick=()=>openDetail(r.dataset.uid));
+    box.querySelectorAll('button.chip[data-u]').forEach(b=>b.onclick=()=>cambiaVisibilita(b));
   }
+  // un clic sull'icona accende o spegne quell'app per quella persona, e salva subito
+  async function cambiaVisibilita(btn){
+    const uid=btn.dataset.u, aid=btn.dataset.a, app=APPS.find(a=>a.id===aid);
+    const acceso=!btn.classList.contains('off'), nuovo=!acceso;
+    btn.classList.toggle('off',!nuovo); btn.disabled=true;
+    const { error }=await _SB.from('suite_permissions')
+      .upsert([{ user_id:uid, app_id:aid, visible:nuovo, updated_at:new Date().toISOString() }],{ onConflict:'user_id,app_id' });
+    btn.disabled=false;
+    if(error){ btn.classList.toggle('off',nuovo); toast('Non salvato: '+error.message); return; }
+    const r=ALL_PERMS.find(p=>p.user_id===uid&&p.app_id===aid);
+    if(r) r.visible=nuovo; else ALL_PERMS.push({ user_id:uid, app_id:aid, visible:nuovo });
+    btn.title=`${app?app.label:aid}: ${nuovo?'la vede':'non la vede'}`;
+    toast(`${app?app.label:aid} — ${nuovo?'ora la vede':'ora non la vede'} ✓`);
+  }
+
   let DETAIL_UID=null;
   function openDetail(uid){
     DETAIL_UID=uid; const u=USER_META[uid];
