@@ -6,8 +6,9 @@
 //
 //  GET  → elenco account (sola lettura)
 //  POST {action:'set-password', user_id, password} → assegna una nuova password
-//        (NON crea e NON elimina account: solo la password viene toccata, e
-//         solo su richiesta esplicita dell'amministratore)
+//  POST {action:'set-avatar',   user_id, image}    → carica la foto profilo
+//        (NON crea e NON elimina account, e agisce solo su richiesta
+//         esplicita dell'amministratore)
 //
 //  Deploy:  supabase functions deploy suite-admin-users
 //  (Le variabili SUPABASE_URL / SERVICE_ROLE / ANON sono già nell'ambiente.)
@@ -49,22 +50,50 @@ Deno.serve(async (req) => {
   if (req.method === 'GET') {
     const { data: { users }, error } = await admin.auth.admin.listUsers({ perPage: 1000 });
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: cors });
-    const slim = users.map(u => ({ id: u.id, email: u.email, last_sign_in_at: u.last_sign_in_at }));
+    const slim = users.map(u => ({ id: u.id, email: u.email, last_sign_in_at: u.last_sign_in_at, user_metadata: u.user_metadata }));
     return new Response(JSON.stringify(slim), { headers: { ...cors, 'Content-Type': 'application/json' } });
   }
 
   // 4) assegnazione di una nuova password, su richiesta esplicita dell'admin
   if (req.method === 'POST') {
     const body = await req.json().catch(() => ({}));
-    if (body.action !== 'set-password') {
-      return new Response(JSON.stringify({ error: 'Operazione non prevista' }), { status: 400, headers: cors });
+    if (!body.user_id) {
+      return new Response(JSON.stringify({ error: 'Utente non indicato' }), { status: 400, headers: cors });
     }
-    if (!body.user_id || typeof body.password !== 'string' || body.password.length < 8) {
-      return new Response(JSON.stringify({ error: 'Dati non validi: serve un utente e almeno 8 caratteri' }), { status: 400, headers: cors });
+
+    // nuova password
+    if (body.action === 'set-password') {
+      if (typeof body.password !== 'string' || body.password.length < 8) {
+        return new Response(JSON.stringify({ error: 'Dati non validi: servono almeno 8 caratteri' }), { status: 400, headers: cors });
+      }
+      const { error } = await admin.auth.admin.updateUserById(body.user_id, { password: body.password });
+      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: cors });
+      return new Response(JSON.stringify({ ok: true }), { headers: { ...cors, 'Content-Type': 'application/json' } });
     }
-    const { error } = await admin.auth.admin.updateUserById(body.user_id, { password: body.password });
-    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: cors });
-    return new Response(JSON.stringify({ ok: true }), { headers: { ...cors, 'Content-Type': 'application/json' } });
+
+    // foto profilo: arriva gia' ridotta a 256px quadrati dal browser
+    if (body.action === 'set-avatar') {
+      const dati = String(body.image || '');
+      const m = dati.match(/^data:image\/(jpeg|png|webp);base64,(.+)$/);
+      if (!m) return new Response(JSON.stringify({ error: 'Immagine non valida' }), { status: 400, headers: cors });
+      if (m[2].length > 4_000_000) return new Response(JSON.stringify({ error: 'Immagine troppo pesante' }), { status: 400, headers: cors });
+      const bytes = Uint8Array.from(atob(m[2]), (c) => c.charCodeAt(0));
+      const path = `${body.user_id}.jpg`;
+      const { error: upErr } = await admin.storage.from('avatars')
+        .upload(path, bytes, { upsert: true, contentType: 'image/jpeg' });
+      if (upErr) return new Response(JSON.stringify({ error: 'Caricamento non riuscito: ' + upErr.message }), { status: 500, headers: cors });
+
+      const base = admin.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+      const avatar_url = `${base}?t=${Date.now()}`;
+      // conservo il resto dei dati del profilo, cambio solo la foto
+      const { data: attuale } = await admin.auth.admin.getUserById(body.user_id);
+      const meta = { ...(attuale?.user?.user_metadata || {}), avatar_url };
+      const { error } = await admin.auth.admin.updateUserById(body.user_id, { user_metadata: meta });
+      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: cors });
+      return new Response(JSON.stringify({ ok: true, avatar_url }), { headers: { ...cors, 'Content-Type': 'application/json' } });
+    }
+
+    return new Response(JSON.stringify({ error: 'Operazione non prevista' }), { status: 400, headers: cors });
   }
 
   return new Response(JSON.stringify({ error: 'Metodo non supportato' }), { status: 405, headers: cors });

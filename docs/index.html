@@ -103,7 +103,11 @@
       .perm-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;border:1px solid var(--border)}
       .perm-ico svg{width:26px;height:26px}
       .perm-label{font-size:15px;font-weight:800;flex:1}
-      .switch{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;cursor:pointer}
+      .switch{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;cursor:pointer;user-select:none}
+      .switch input{width:21px;height:21px;accent-color:var(--magenta);cursor:pointer;margin:0}
+      .perm-app{cursor:pointer}
+      .perm-app:hover{border-color:var(--magenta)}
+      .perm-stato{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--grey);margin-top:9px}
       .perm-body{margin-top:15px;padding-top:15px;border-top:1px solid #f1f1f6}
       .perm-app.off{opacity:.5}
       .perm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px;align-items:start}
@@ -120,9 +124,12 @@
       .chip.off{opacity:.2}
       .acct{border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;background:#fff;color:var(--ink)}
       .acct h4{font-size:14px;font-weight:800;margin-bottom:6px}
+      .acct-top{display:flex;gap:16px;align-items:center;margin-bottom:15px}
+      .acct-av{width:70px;height:70px;border-radius:50%;background:var(--cyan);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:25px;overflow:hidden;flex-shrink:0}
+      .acct-av img{width:100%;height:100%;object-fit:cover}
       .acct .hint{font-size:12.5px;color:var(--grey);font-weight:500;line-height:1.55}
       .acct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:13px}
-      .save-bar{position:sticky;bottom:0;background:linear-gradient(transparent,#fff 34%);padding:22px 0;display:flex;gap:10px;justify-content:flex-end}
+      .save-bar{position:sticky;bottom:18px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:14px 18px;margin:13px 0 40px;display:flex;gap:10px;justify-content:flex-end}
 
       /* MODALE */
       .overlay{position:fixed;inset:0;background:rgba(24,24,52,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
@@ -444,16 +451,17 @@
     const up={}; ALL_PERMS.filter(p=>p.user_id===uid).forEach(p=>up[p.app_id]=p);
     const name=u?.user_metadata?.full_name||(u?.email||'').split('@')[0];
     document.getElementById('detail-title').textContent=name||'permessi';
-    document.getElementById('detail-sub').textContent=(u?.email||'')+' — spunta le app visibili, scegli il ruolo e (se "personalizzato") le funzionalità.';
+    document.getElementById('detail-sub').textContent=(u?.email||'')+' — accendi le app che questa persona deve vedere nella suite, poi salva.';
     document.getElementById('detail-apps').innerHTML=APPS.map(app=>{
-      const p=up[app.id]||{}; const checked=p.visible?'checked':''; const role=p.role||'user'; const feats=p.features||{};
-      const fc=app.features.map(f=>`<label class="feat"><input type="checkbox" data-feat="${f}" ${feats[f]?'checked':''}> ${featLabel(f)}</label>`).join('');
-      return `<div class="perm-app ${checked?'':'off'}" data-app="${app.id}"><div class="perm-head"><div class="perm-ico">${svgIcon(app.id)}</div><span class="perm-label">${esc(app.label)}</span><label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> Visibile</label></div><div class="perm-body"><div class="perm-row"><label>Ruolo</label><select class="input role-sel">${ROLES.map(r=>`<option value="${r}" ${r===role?'selected':''}>${roleLabel(r)}</option>`).join('')}</select></div>${app.features.length?`<div class="features-box ${role==='custom'?'open':''}"><label style="font-size:12px;font-weight:700;color:var(--grey)">Funzionalità disponibili</label><div class="features-grid">${fc}</div></div>`:''}</div></div>`;
+      const checked=up[app.id]?.visible?'checked':'';
+      return `<div class="perm-app ${checked?'':'off'}" data-app="${app.id}"><div class="perm-head"><div class="perm-ico">${svgIcon(app.id)}</div><span class="perm-label">${esc(app.label)}</span><label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> <span class="vis-lbl">${checked?'Vede':'Non vede'}</span></label></div><div class="perm-stato">${esc(app.description)}</div></div>`;
     }).join('');
     document.querySelectorAll('.perm-app').forEach(card=>{
-      card.querySelector('.vis-toggle').onchange=e=>card.classList.toggle('off',!e.target.checked);
-      const rs=card.querySelector('.role-sel'),fb=card.querySelector('.features-box');
-      if(rs&&fb) rs.onchange=e=>fb.classList.toggle('open',e.target.value==='custom');
+      const cb=card.querySelector('.vis-toggle');
+      const aggiorna=()=>{ card.classList.toggle('off',!cb.checked); card.querySelector('.vis-lbl').textContent=cb.checked?'Vede':'Non vede'; };
+      cb.onchange=aggiorna;
+      // tutto il riquadro è cliccabile, non solo la casella
+      card.onclick=e=>{ if(e.target.closest('.switch')) return; cb.checked=!cb.checked; aggiorna(); };
     });
     renderAccount(u);
     showView('detail');
@@ -463,15 +471,49 @@
   // Il superadmin può però assegnarne una nuova, scrivendola in chiaro.
   function renderAccount(u){
     const ultimo=u?.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'mai entrato';
+    const nome=u?.user_metadata?.full_name||(u?.email||'').split('@')[0];
+    const av=u?.user_metadata?.avatar_url;
     document.getElementById('detail-account').innerHTML=`<div class="acct">
-      <h4>Accesso</h4>
-      <div class="hint">Email: ${esc(u?.email||'')} — ultimo accesso: ${ultimo}.<br>La password non è visibile a nessuno, nemmeno a te: viene conservata cifrata e non si può recuperare. Qui puoi assegnarne una nuova e comunicarla alla persona.</div>
+      <div class="acct-top">
+        <div class="acct-av" id="ac-av">${av?`<img src="${esc(av)}" alt="">`:esc((nome[0]||'U').toUpperCase())}</div>
+        <div>
+          <h4>${esc(nome)}</h4>
+          <div class="hint">${esc(u?.email||'')} — ultimo accesso: ${ultimo}</div>
+          <label class="btn-upload" for="ac-file" style="margin-top:9px">Carica foto</label>
+          <input type="file" id="ac-file" accept="image/*" style="display:none">
+        </div>
+      </div>
+      <h4>Password</h4>
+      <div class="hint">La password non è visibile a nessuno, nemmeno a te: viene conservata cifrata e non si può recuperare. Qui puoi assegnarne una nuova e comunicarla alla persona.</div>
       <div class="acct-row">
         <input class="input" id="pw-new" type="text" autocomplete="off" placeholder="Nuova password (almeno 8 caratteri)" style="min-width:280px">
         <button class="btn btn-primary" id="pw-set">Imposta password</button>
       </div>
       <div id="pw-msg" style="font-size:12.5px;font-weight:600;margin-top:11px;display:none"></div></div>`;
     document.getElementById('pw-set').onclick=cambiaPassword;
+    document.getElementById('ac-file').onchange=caricaFoto;
+  }
+  // la foto viene ridotta a 256px quadrati e caricata sull'account di quella persona
+  function caricaFoto(e){
+    const file=e.target.files[0]; if(!file) return;
+    const r=new FileReader();
+    r.onload=ev=>{ const img=new Image(); img.onload=()=>{
+      const S=256,c=document.createElement('canvas'); c.width=S; c.height=S;
+      const m=Math.min(img.width,img.height);
+      c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);
+      const dati=c.toDataURL('image/jpeg',0.85);
+      pwMsg('ok','Caricamento foto…');
+      adminFetch('POST',{ action:'set-avatar', user_id:DETAIL_UID, image:dati })
+        .then(r=>{
+          document.getElementById('ac-av').innerHTML=`<img src="${r.avatar_url}" alt="">`;
+          const u=USER_META[DETAIL_UID];
+          if(u){ u.user_metadata={...(u.user_metadata||{}), avatar_url:r.avatar_url}; }
+          pwMsg('ok','Foto aggiornata ✓');
+          renderUsersTable();
+        })
+        .catch(err=>pwMsg('error','Non è stato possibile caricare la foto: '+err.message));
+    }; img.src=ev.target.result; };
+    r.readAsDataURL(file);
   }
   function pwMsg(t,x){ const e=document.getElementById('pw-msg'); e.style.display='block'; e.style.color=t==='ok'?'var(--cyan2)':'var(--magenta)'; e.textContent=x; }
   async function cambiaPassword(){
@@ -489,7 +531,7 @@
 
   document.getElementById('btn-save').onclick=async()=>{
     const rows=[];
-    document.querySelectorAll('.perm-app').forEach(card=>{ const features={}; card.querySelectorAll('[data-feat]').forEach(cb=>features[cb.dataset.feat]=cb.checked); rows.push({ user_id:DETAIL_UID, app_id:card.dataset.app, visible:card.querySelector('.vis-toggle').checked, role:card.querySelector('.role-sel')?.value||'user', features, updated_at:new Date().toISOString() }); });
+    document.querySelectorAll('.perm-app').forEach(card=>{ rows.push({ user_id:DETAIL_UID, app_id:card.dataset.app, visible:card.querySelector('.vis-toggle').checked, updated_at:new Date().toISOString() }); });
     const btn=document.getElementById('btn-save'); btn.disabled=true; btn.textContent='Salvataggio…';
     const { error }=await _SB.from('suite_permissions').upsert(rows,{ onConflict:'user_id,app_id' });
     btn.disabled=false; btn.textContent='Salva permessi';
