@@ -211,17 +211,6 @@
     <div class="toolbar">
       <input class="input" id="new-email" type="email" placeholder="email@esempio.it" style="min-width:250px">
       <button class="btn btn-primary" id="btn-add">+ Aggiungi utente</button>
-      <button class="btn btn-upload" id="btn-import" style="padding:12px 18px">Importa più colleghi</button>
-    </div>
-    <div class="acct" id="import-box" style="display:none">
-      <h4>Importa colleghi</h4>
-      <div class="hint">Incolla un'email per riga (puoi scrivere anche <em>email, Nome Cognome</em>). Chi ha già un account viene saltato: non gli tocco nulla. Per i nuovi creo l'account con una password che ti mostro qui sotto, da comunicare alla persona.</div>
-      <textarea class="input" id="import-lista" rows="7" style="width:100%;margin-top:12px;resize:vertical;font-family:var(--font)" placeholder="nome@in3pida.it, Nome Cognome&#10;altro@in3pida.it"></textarea>
-      <div class="acct-row">
-        <button class="btn btn-primary" id="import-go">Crea gli account mancanti</button>
-        <button class="btn btn-upload" id="import-close" style="padding:12px 18px">Chiudi</button>
-      </div>
-      <div id="import-esito" style="margin-top:14px"></div>
     </div>
     <div id="users-content"></div>
   </div>
@@ -268,7 +257,7 @@
   // ─── AGGIORNAMENTO AUTOMATICO ─────────────────────────────────────────────
   // GitHub Pages dice al browser di tenersi la pagina per 10 minuti. Qui la
   // confronto con quella sul server: se e' cambiata, ricarico una volta sola.
-  const VERSIONE='2026-10-01c';
+  const VERSIONE='2026-10-01d';
   (async()=>{
     try{
       const r=await fetch('index.html?_v='+Date.now(),{cache:'no-store'});
@@ -481,43 +470,6 @@
     box.querySelectorAll('[data-uid]').forEach(r=>r.onclick=()=>openDetail(r.dataset.uid));
     box.querySelectorAll('button.chip[data-u]').forEach(b=>b.onclick=()=>cambiaVisibilita(b));
   }
-  // ─── IMPORTAZIONE COLLEGHI ────────────────────────────────────────────────
-  const btnImport=document.getElementById('btn-import');
-  btnImport.onclick=()=>{ const b=document.getElementById('import-box'); b.style.display=b.style.display==='none'?'block':'none'; };
-  document.getElementById('import-close').onclick=()=>document.getElementById('import-box').style.display='none';
-
-  function passwordNuova(){
-    const abc='abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    const r=crypto.getRandomValues(new Uint32Array(8));
-    return 'Suite-'+[...r].map(n=>abc[n%abc.length]).join('');
-  }
-
-  document.getElementById('import-go').onclick=async()=>{
-    const righe=document.getElementById('import-lista').value.split('\n').map(r=>r.trim()).filter(Boolean);
-    if(!righe.length){ toast('Incolla almeno un\'email'); return; }
-    const esito=document.getElementById('import-esito');
-    const btn=document.getElementById('import-go'); btn.disabled=true; btn.textContent='Creazione in corso…';
-    const fatti=[];
-    for(const riga of righe){
-      const [em,...resto]=riga.split(',');
-      const email=(em||'').trim().toLowerCase(), nome=resto.join(',').trim();
-      if(!email.includes('@')){ fatti.push({email:riga,stato:'email non valida',pw:''}); continue; }
-      if(ALL_USERS.some(u=>(u.email||'').toLowerCase()===email)){ fatti.push({email,stato:'c\'era già',pw:''}); continue; }
-      const pw=passwordNuova();
-      try{
-        const r=await adminFetch('POST',{ action:'create-user', email, password:pw, full_name:nome });
-        fatti.push({ email, stato:r.esisteva?'c\'era già':'creato', pw:r.esisteva?'':pw });
-      }catch(e){ fatti.push({ email, stato:'errore: '+e.message, pw:'' }); }
-    }
-    btn.disabled=false; btn.textContent='Crea gli account mancanti';
-    esito.innerHTML=`<table><thead><tr><th>Email</th><th>Esito</th><th>Password da comunicare</th></tr></thead><tbody>${
-      fatti.map(f=>`<tr><td>${esc(f.email)}</td><td>${esc(f.stato)}</td><td style="font-weight:700">${esc(f.pw||'—')}</td></tr>`).join('')
-    }</tbody></table><div class="hint" style="margin-top:10px">Copia ora le password: quando ricarichi la pagina non saranno più recuperabili.</div>`;
-    await openUsers();
-    document.getElementById('import-box').style.display='block';
-    document.getElementById('import-esito').innerHTML=esito.innerHTML;
-  };
-
   // un clic sull'icona accende o spegne quell'app per quella persona, e salva subito
   async function cambiaVisibilita(btn){
     const uid=btn.dataset.u, aid=btn.dataset.a, app=APPS.find(a=>a.id===aid);
@@ -531,6 +483,11 @@
     if(r) r.visible=nuovo; else ALL_PERMS.push({ user_id:uid, app_id:aid, visible:nuovo });
     btn.title=`${app?app.label:aid}: ${nuovo?'la vede':'non la vede'}`;
     toast(`${app?app.label:aid} — ${nuovo?'ora la vede':'ora non la vede'} ✓`);
+  }
+
+  function passwordNuova(){
+    const abc='abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    return 'Suite-'+[...crypto.getRandomValues(new Uint32Array(8))].map(n=>abc[n%abc.length]).join('');
   }
 
   let DETAIL_UID=null;
