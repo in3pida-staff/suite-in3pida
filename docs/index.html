@@ -265,6 +265,22 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
+  // ─── AGGIORNAMENTO AUTOMATICO ─────────────────────────────────────────────
+  // GitHub Pages dice al browser di tenersi la pagina per 10 minuti. Qui la
+  // confronto con quella sul server: se e' cambiata, ricarico una volta sola.
+  const VERSIONE='2026-10-01c';
+  (async()=>{
+    try{
+      const r=await fetch('index.html?_v='+Date.now(),{cache:'no-store'});
+      const t=await r.text();
+      const m=t.match(/const VERSIONE='([^']+)'/);
+      if(m && m[1]!==VERSIONE && sessionStorage.getItem('ver')!==m[1]){
+        sessionStorage.setItem('ver',m[1]);
+        location.reload();
+      }
+    }catch(e){}
+  })();
+
   const SUPABASE_URL='https://yyauvoqjdzrbmebeafit.supabase.co';
   const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5YXV2b3FqZHpyYm1lYmVhZml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3OTM2MDAsImV4cCI6MjA5NTM2OTYwMH0.M6kD56PEO_UcJ68Vjquo03vuORjv62MflIzGLzYKN9w';
   const ADMIN_EMAIL='mario@in3pida.it';
