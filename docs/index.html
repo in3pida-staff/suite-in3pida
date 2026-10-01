@@ -27,12 +27,12 @@
         background-attachment:fixed}
 
       /* NAVBAR */
-      .navbar{height:64px;background:transparent;position:sticky;top:0;z-index:50}
-      .nav-inner{max-width:1120px;margin:0 auto;height:100%;padding:0 26px;display:flex;align-items:center;justify-content:space-between}
-      .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+      .navbar{height:64px;background:transparent;position:sticky;top:0;z-index:50;pointer-events:none}
+      .nav-inner{max-width:1120px;margin:0 auto;height:100%;padding:0 26px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+      .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;pointer-events:auto}
       .nav-logo img{height:28px;object-fit:contain}
       .nav-logo .badge{background:#fff;color:var(--magenta);font-size:10px;font-weight:800;padding:3px 11px;border-radius:999em;text-transform:uppercase;letter-spacing:.06em}
-      .nav-right{display:flex;align-items:center;position:relative}
+      .nav-right{display:flex;align-items:center;position:relative;pointer-events:auto}
       .user-pill{display:flex;align-items:center;gap:11px;cursor:pointer;padding:6px 10px 6px 6px;border-radius:999em;transition:.15s}
       .user-pill:hover{background:rgba(255,255,255,.15)}
       .avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.85);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden;flex-shrink:0}
@@ -79,7 +79,7 @@
       .empty-ico{font-size:40px;margin-bottom:12px}
 
       /* ADMIN */
-      .back-link{background:none;border:none;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);padding:8px 0;margin-bottom:2px}
+      .back-link{background:none;border:none;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--font);padding:8px 0;margin-bottom:2px;position:relative;z-index:55}
       .toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
       .input{padding:12px 15px;border:1.5px solid var(--border);border-radius:14px;font-size:13px;font-weight:500;font-family:var(--font);background:#fff;outline:none}
       .input:focus{border-color:var(--magenta)}
@@ -88,7 +88,7 @@
       .btn-primary:hover{background:var(--magenta2)}
       .btn-danger{background:#fff;border:1.5px solid var(--red-text);color:var(--red-text)}
       .btn-danger:hover{background:var(--red-bg)}
-      table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden}
+      table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;color:var(--ink)}
       th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey);padding:14px 18px;background:#fafafc;border-bottom:1px solid var(--border);font-weight:800}
       td{padding:14px 18px;font-size:13px;font-weight:500;border-bottom:1px solid #f1f1f6}
       tr:last-child td{border-bottom:none}
@@ -98,20 +98,30 @@
       .u-av{width:36px;height:36px;border-radius:50%;background:var(--cyan);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;overflow:hidden;flex-shrink:0}
       .u-av img{width:100%;height:100%;object-fit:cover}
       .pill{display:inline-block;background:rgba(0,155,185,.13);color:var(--cyan2);font-size:11px;font-weight:800;padding:4px 12px;border-radius:999em}
-      .perm-app{border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;background:#fff}
+      .perm-app{border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;background:#fff;color:var(--ink)}
       .perm-head{display:flex;align-items:center;gap:13px}
       .perm-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;border:1px solid var(--border)}
       .perm-ico svg{width:26px;height:26px}
       .perm-label{font-size:15px;font-weight:800;flex:1}
       .switch{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;cursor:pointer}
-      .perm-body{margin-top:15px;padding-top:15px;border-top:1px solid #f1f1f6;display:none}
-      .perm-body.open{display:block}
+      .perm-body{margin-top:15px;padding-top:15px;border-top:1px solid #f1f1f6}
+      .perm-app.off{opacity:.5}
+      .perm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px;align-items:start}
+      .perm-app{margin-bottom:0}
       .perm-row{display:flex;align-items:center;gap:11px;margin-bottom:12px}
       .perm-row label{font-size:13px;font-weight:700}
       .features-box{margin-top:8px;display:none}
       .features-box.open{display:block}
       .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-top:9px}
       .feat{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;background:#f6f6fb;padding:9px 12px;border-radius:11px;cursor:pointer}
+      .appchips{display:flex;gap:5px;flex-wrap:wrap}
+      .chip{width:28px;height:28px;border-radius:9px;background:#fff;border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center}
+      .chip svg{width:18px;height:18px;display:block}
+      .chip.off{opacity:.2}
+      .acct{border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:13px;background:#fff;color:var(--ink)}
+      .acct h4{font-size:14px;font-weight:800;margin-bottom:6px}
+      .acct .hint{font-size:12.5px;color:var(--grey);font-weight:500;line-height:1.55}
+      .acct-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:13px}
       .save-bar{position:sticky;bottom:0;background:linear-gradient(transparent,#fff 34%);padding:22px 0;display:flex;gap:10px;justify-content:flex-end}
 
       /* MODALE */
@@ -198,7 +208,8 @@
       <div class="h1" id="detail-title" style="font-size:30px">permessi</div>
       <div class="lead" id="detail-sub"></div>
     </div>
-    <div id="detail-apps"></div>
+    <div id="detail-account"></div>
+    <div id="detail-apps" class="perm-grid"></div>
     <div class="save-bar">
       <button class="btn btn-danger" id="btn-remove">Rimuovi utente</button>
       <button class="btn btn-primary" id="btn-save">Salva permessi</button>
@@ -417,11 +428,12 @@
     const box=document.getElementById('users-content');
     if(!ALL_USERS.length){ box.innerHTML=`<div class="notice">Nessun utente registrato.</div>`; return; }
     const rows=ALL_USERS.map(u=>{
-      const n=ALL_PERMS.filter(p=>p.user_id===u.id&&p.visible).length;
+      const chips=APPS.map(a=>{ const on=ALL_PERMS.some(p=>p.user_id===u.id&&p.app_id===a.id&&p.visible);
+        return `<span class="chip ${on?'':'off'}" title="${esc(a.label)}">${svgIcon(a.id)}</span>`; }).join('');
       const name=u.user_metadata?.full_name||(u.email||'').split('@')[0];
       const av=u.user_metadata?.avatar_url; const ini=(name[0]||'U').toUpperCase();
       const last=u.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Mai';
-      return `<tr class="row-click" data-uid="${u.id}"><td><div class="u-cell"><div class="u-av">${av?`<img src="${av}">`:ini}</div><div><div style="font-weight:700">${esc(name)}</div><div style="font-size:11.5px;color:var(--grey)">${esc(u.email)}</div></div></div></td><td><span class="pill">${n} app</span></td><td style="color:var(--grey)">${last}</td></tr>`;
+      return `<tr class="row-click" data-uid="${u.id}"><td><div class="u-cell"><div class="u-av">${av?`<img src="${av}">`:ini}</div><div><div style="font-weight:700">${esc(name)}</div><div style="font-size:11.5px;color:var(--grey)">${esc(u.email)}</div></div></div></td><td><div class="appchips">${chips}</div></td><td style="color:var(--grey)">${last}</td></tr>`;
     }).join('');
     box.innerHTML=`<table><thead><tr><th>Utente</th><th>App assegnate</th><th>Ultimo accesso</th></tr></thead><tbody>${rows}</tbody></table>`;
     box.querySelectorAll('[data-uid]').forEach(r=>r.onclick=()=>openDetail(r.dataset.uid));
@@ -436,16 +448,45 @@
     document.getElementById('detail-apps').innerHTML=APPS.map(app=>{
       const p=up[app.id]||{}; const checked=p.visible?'checked':''; const role=p.role||'user'; const feats=p.features||{};
       const fc=app.features.map(f=>`<label class="feat"><input type="checkbox" data-feat="${f}" ${feats[f]?'checked':''}> ${featLabel(f)}</label>`).join('');
-      return `<div class="perm-app" data-app="${app.id}"><div class="perm-head"><div class="perm-ico">${svgIcon(app.id)}</div><span class="perm-label">${esc(app.label)}</span><label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> App visibile</label></div><div class="perm-body ${checked?'open':''}"><div class="perm-row"><label>Ruolo</label><select class="input role-sel">${ROLES.map(r=>`<option value="${r}" ${r===role?'selected':''}>${roleLabel(r)}</option>`).join('')}</select></div>${app.features.length?`<div class="features-box ${role==='custom'?'open':''}"><label style="font-size:12px;font-weight:700;color:var(--grey)">Funzionalità disponibili</label><div class="features-grid">${fc}</div></div>`:''}</div></div>`;
+      return `<div class="perm-app ${checked?'':'off'}" data-app="${app.id}"><div class="perm-head"><div class="perm-ico">${svgIcon(app.id)}</div><span class="perm-label">${esc(app.label)}</span><label class="switch"><input type="checkbox" class="vis-toggle" ${checked}> Visibile</label></div><div class="perm-body"><div class="perm-row"><label>Ruolo</label><select class="input role-sel">${ROLES.map(r=>`<option value="${r}" ${r===role?'selected':''}>${roleLabel(r)}</option>`).join('')}</select></div>${app.features.length?`<div class="features-box ${role==='custom'?'open':''}"><label style="font-size:12px;font-weight:700;color:var(--grey)">Funzionalità disponibili</label><div class="features-grid">${fc}</div></div>`:''}</div></div>`;
     }).join('');
     document.querySelectorAll('.perm-app').forEach(card=>{
-      const body=card.querySelector('.perm-body');
-      card.querySelector('.vis-toggle').onchange=e=>body.classList.toggle('open',e.target.checked);
+      card.querySelector('.vis-toggle').onchange=e=>card.classList.toggle('off',!e.target.checked);
       const rs=card.querySelector('.role-sel'),fb=card.querySelector('.features-box');
       if(rs&&fb) rs.onchange=e=>fb.classList.toggle('open',e.target.value==='custom');
     });
+    renderAccount(u);
     showView('detail');
   }
+  // ─── ACCESSO ──────────────────────────────────────────────────────────────
+  // La password non è leggibile: Supabase ne conserva solo l'impronta cifrata.
+  // Il superadmin può però assegnarne una nuova, scrivendola in chiaro.
+  function renderAccount(u){
+    const ultimo=u?.last_sign_in_at?new Date(u.last_sign_in_at).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'mai entrato';
+    document.getElementById('detail-account').innerHTML=`<div class="acct">
+      <h4>Accesso</h4>
+      <div class="hint">Email: ${esc(u?.email||'')} — ultimo accesso: ${ultimo}.<br>La password non è visibile a nessuno, nemmeno a te: viene conservata cifrata e non si può recuperare. Qui puoi assegnarne una nuova e comunicarla alla persona.</div>
+      <div class="acct-row">
+        <input class="input" id="pw-new" type="text" autocomplete="off" placeholder="Nuova password (almeno 8 caratteri)" style="min-width:280px">
+        <button class="btn btn-primary" id="pw-set">Imposta password</button>
+      </div>
+      <div id="pw-msg" style="font-size:12.5px;font-weight:600;margin-top:11px;display:none"></div></div>`;
+    document.getElementById('pw-set').onclick=cambiaPassword;
+  }
+  function pwMsg(t,x){ const e=document.getElementById('pw-msg'); e.style.display='block'; e.style.color=t==='ok'?'var(--cyan2)':'var(--magenta)'; e.textContent=x; }
+  async function cambiaPassword(){
+    const campo=document.getElementById('pw-new'), pw=campo.value.trim(), u=USER_META[DETAIL_UID];
+    if(pw.length<8){ pwMsg('error','La password deve avere almeno 8 caratteri.'); return; }
+    if(!confirm(`Assegnare la password "${pw}" a ${u?.email}?\n\nDa questo momento quella precedente non funzionerà più.`)) return;
+    const btn=document.getElementById('pw-set'); btn.disabled=true; btn.textContent='Attendi…';
+    try{
+      await adminFetch('POST',{ action:'set-password', user_id:DETAIL_UID, password:pw });
+      campo.value='';
+      pwMsg('ok','Password aggiornata ✓ — comunicala alla persona, qui non sarà più visibile.');
+    }catch(e){ pwMsg('error','Non è stato possibile cambiarla: '+e.message); }
+    btn.disabled=false; btn.textContent='Imposta password';
+  }
+
   document.getElementById('btn-save').onclick=async()=>{
     const rows=[];
     document.querySelectorAll('.perm-app').forEach(card=>{ const features={}; card.querySelectorAll('[data-feat]').forEach(cb=>features[cb.dataset.feat]=cb.checked); rows.push({ user_id:DETAIL_UID, app_id:card.dataset.app, visible:card.querySelector('.vis-toggle').checked, role:card.querySelector('.role-sel')?.value||'user', features, updated_at:new Date().toISOString() }); });
