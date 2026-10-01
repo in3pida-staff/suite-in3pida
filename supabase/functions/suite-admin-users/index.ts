@@ -7,6 +7,8 @@
 //  GET  → elenco account (sola lettura)
 //  POST {action:'set-password', user_id, password} → assegna una nuova password
 //  POST {action:'set-avatar',   user_id, image}    → carica la foto profilo
+//  POST {action:'create-user',  email, password, full_name} → nuovo account
+//        (se l'email esiste gia' NON tocca nulla e lo dice)
 //        (NON crea e NON elimina account, e agisce solo su richiesta
 //         esplicita dell'amministratore)
 //
@@ -57,6 +59,30 @@ Deno.serve(async (req) => {
   // 4) assegnazione di una nuova password, su richiesta esplicita dell'admin
   if (req.method === 'POST') {
     const body = await req.json().catch(() => ({}));
+    // creazione di un nuovo account
+    if (body.action === 'create-user') {
+      const email = String(body.email || '').trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        return new Response(JSON.stringify({ error: 'Email non valida' }), { status: 400, headers: cors });
+      }
+      if (typeof body.password !== 'string' || body.password.length < 8) {
+        return new Response(JSON.stringify({ error: 'Password troppo corta' }), { status: 400, headers: cors });
+      }
+      // se l'account esiste gia' non lo tocco in nessun modo
+      const { data: esistenti } = await admin.auth.admin.listUsers({ perPage: 1000 });
+      const gia = (esistenti?.users || []).find((u) => (u.email || '').toLowerCase() === email);
+      if (gia) {
+        return new Response(JSON.stringify({ ok: true, esisteva: true, id: gia.id, email }), { headers: { ...cors, 'Content-Type': 'application/json' } });
+      }
+      const meta: Record<string, unknown> = {};
+      if (body.full_name) meta.full_name = String(body.full_name);
+      const { data, error } = await admin.auth.admin.createUser({
+        email, password: body.password, email_confirm: true, user_metadata: meta,
+      });
+      if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: cors });
+      return new Response(JSON.stringify({ ok: true, esisteva: false, id: data.user?.id, email }), { headers: { ...cors, 'Content-Type': 'application/json' } });
+    }
+
     if (!body.user_id) {
       return new Response(JSON.stringify({ error: 'Utente non indicato' }), { status: 400, headers: cors });
     }
